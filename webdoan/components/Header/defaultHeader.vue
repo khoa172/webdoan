@@ -29,7 +29,9 @@
             <b-dropdown-item>
               <NuxtLink to="/decks">Decks</NuxtLink>
             </b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+            <b-dropdown-item >
+              <NuxtLink to="/login">Login</NuxtLink>
+            </b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
