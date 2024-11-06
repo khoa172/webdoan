@@ -22,7 +22,6 @@
       </div>
     </div>
   </template>
-  
   <script>
   export default {
     data() {
@@ -33,7 +32,6 @@
     },
     methods: {
       submitForm() {
-        // Xử lý việc đăng nhập tại đây
         console.log('Tên đăng nhập:', this.username);
         console.log('Mật khẩu:', this.password);
       }
