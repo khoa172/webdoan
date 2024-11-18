@@ -1,37 +1,36 @@
 <template>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-header">Đăng nhập</div>
-          <div class="card-body">
-            <form @submit.prevent="submitForm">
-              <div class="form-group">
-                <label for="username">Tên đăng nhập</label>
-                <input
-                  type="text"
-                  v-model="username"
-                  class="form-control"
-                  id="username"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <label for="password">Mật khẩu</label>
-                <input
-                  type="password"
-                  v-model="password"
-                  class="form-control"
-                  id="password"
-                  required
-                />
-              </div>
-              <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
-              <p v-if="error" class="text-danger mt-3">{{ error }}</p>
-            </form>
-          </div>
-        </div>
+  <div>
+    <form @submit.prevent="submitForm">
+      <div class="mb-3">
+        <label for="username" class="form-label">Tên đăng nhập</label>
+        <input
+          type="text"
+          v-model="username"
+          class="form-control"
+          id="username"
+          placeholder="Nhập tên đăng nhập"
+          required
+        />
       </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Mật khẩu</label>
+        <input
+          type="password"
+          v-model="password"
+          class="form-control"
+          id="password"
+          placeholder="Nhập mật khẩu"
+          required
+        />
+      </div>
+      <button type="submit" class="btn btn-primary w-100 mt-3">Đăng nhập</button>
+      <p v-if="error" class="text-danger mt-3 text-center">{{ error }}</p>
+    </form>
+    <div class="text-center mt-4">
+      <p>
+        Chưa có tài khoản?
+        <a href="#" class="text-primary" @click.prevent="$emit('switchToRegister')">Đăng ký ngay</a>
+      </p>
     </div>
   </div>
 </template>
@@ -47,7 +46,7 @@ const router = useRouter();
 
 const submitForm = async () => {
   try {
-    const { data } = await useFetch('/admin/login', {
+    const { data } = await useFetch('/api/admin/login', {
       method: 'POST',
       baseURL: useRuntimeConfig().public.apiBase,
       body: {
@@ -56,9 +55,10 @@ const submitForm = async () => {
       },
     });
 
-    // Lưu token và chuyển hướng
     if (data.value.token) {
+      // Lưu token và điều hướng
       localStorage.setItem('token', data.value.token);
+      localStorage.setItem('user', JSON.stringify(data.value.user));
       router.push('/admin');
     } else {
       throw new Error('Token không tồn tại');
@@ -69,8 +69,4 @@ const submitForm = async () => {
 };
 </script>
 
-<style scoped>
-.container {
-  margin-top: 100px;
-}
-</style>
+

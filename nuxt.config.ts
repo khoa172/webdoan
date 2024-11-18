@@ -6,7 +6,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'http://localhost:3001/api', // URL của API Express
+      apiBase: 'http://localhost:3001', // URL của API Express
     },
   },
 

@@ -10,7 +10,7 @@
                 <li><a href=""><i class="fa fa-heart"></i> Wishlist</a></li>
                 <li><a href=""><i class="fa fa-user"></i> My Cart</a></li>
                 <li><a href=""><i class="fa fa-user"></i> Checkout</a></li>
-                <li><i class="fa fa-user"></i> <NuxtLink to="/login">Login</NuxtLink></li>
+                <li><i class="fa fa-user"></i> <NuxtLink to="/auth">Login</NuxtLink></li>
               </ul>
             </div>
           </div>
