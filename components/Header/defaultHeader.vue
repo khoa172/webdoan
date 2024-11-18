@@ -6,11 +6,20 @@
           <div class="col-md-8">
             <div class="user-menu">
               <ul>
-                <li><i class="fa fa-user"></i> <NuxtLink to="/my-account">My Account</NuxtLink></li>
+                <li v-if="isLoggedIn">
+                  <i class="fa fa-user"></i> 
+                  <NuxtLink to="/my-account">My Account</NuxtLink>
+                </li>
                 <li><a href=""><i class="fa fa-heart"></i> Wishlist</a></li>
                 <li><a href=""><i class="fa fa-user"></i> My Cart</a></li>
                 <li><a href=""><i class="fa fa-user"></i> Checkout</a></li>
-                <li><i class="fa fa-user"></i> <NuxtLink to="/auth">Login</NuxtLink></li>
+                <li v-if="isLoggedIn">
+                  <a href="#" @click.prevent="logout"><i class="fa fa-sign-out"></i> Logout</a>
+                </li>
+                <li v-else>
+                  <i class="fa fa-user"></i> 
+                  <NuxtLink to="/auth">Login</NuxtLink>
+                </li>
               </ul>
             </div>
           </div>
@@ -35,6 +44,34 @@
     </div>
   </div>
 </template>
+
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const isLoggedIn = ref(false); // Biến kiểm tra trạng thái đăng nhập
+const user = ref({});
+const router = useRouter();
+
+// Kiểm tra trạng thái đăng nhập khi tải trang
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  const userData = localStorage.getItem('user');
+  if (token && userData) {
+    isLoggedIn.value = true;
+    user.value = JSON.parse(userData);
+  }
+});
+
+// Xử lý đăng xuất
+const logout = () => {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  isLoggedIn.value = false;
+  router.push('/auth'); // Điều hướng đến trang đăng nhập
+};
+</script>
 
 <style scoped>
 .header-area {
