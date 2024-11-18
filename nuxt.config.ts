@@ -9,5 +9,6 @@ export default defineNuxtConfig({
       apiBase: 'http://localhost:3001', // URL của API Express
     },
   },
+    modules: ['@pinia/nuxt'],
 
 });

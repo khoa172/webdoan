@@ -10,10 +10,12 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.7.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.3",
     "nuxt": "^3.14.159",
-    "vue": "latest",
+    "pinia": "^2.2.6",
+    "vue": "^3.2.47",
     "vue-router": "latest"
   }
 }

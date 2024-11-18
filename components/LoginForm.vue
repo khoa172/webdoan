@@ -46,7 +46,7 @@ const router = useRouter();
 
 const submitForm = async () => {
   try {
-    const { data } = await useFetch('/api/admin/login', {
+    const response = await $fetch('/api/admin/login', {
       method: 'POST',
       baseURL: useRuntimeConfig().public.apiBase,
       body: {
@@ -55,10 +55,10 @@ const submitForm = async () => {
       },
     });
 
-    if (data.value.token) {
+    if (response.token) {
       // Lưu token và điều hướng
-      localStorage.setItem('token', data.value.token);
-      localStorage.setItem('user', JSON.stringify(data.value.user));
+      localStorage.setItem('token', response.token);
+      localStorage.setItem('user', JSON.stringify(response.user));
       router.push('/admin');
     } else {
       throw new Error('Token không tồn tại');
