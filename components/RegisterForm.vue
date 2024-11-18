@@ -95,7 +95,7 @@
   
   const submitForm = async () => {
     try {
-      const { data } = await $fetch('/api/customers/register', {
+      const response = await $fetch('/api/customers/register', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.apiBase,
         body: {
@@ -108,7 +108,7 @@
         },
       });
   
-      if (data.value.message) {
+      if (response.message) {
         success.value = 'Tạo tài khoản thành công!';
       }
     } catch (err) {

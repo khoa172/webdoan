@@ -59,7 +59,12 @@ const submitForm = async () => {
       // Lưu token và điều hướng
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
-      router.push('/admin');
+       // Điều hướng dựa trên vai trò
+       if (response.user.role === 'admin') {
+        router.push('/admin'); // Chuyển đến trang admin
+      } else if (response.user.role === 'customer') {
+        router.push('/my-account'); // Chuyển đến trang My Account
+      }
     } else {
       throw new Error('Token không tồn tại');
     }
