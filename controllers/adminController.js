@@ -1,23 +1,23 @@
-const pool = require('../db'); // Kết nối cơ sở dữ liệu
+const pool = require('../db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const SECRET_KEY = 'your-secret-key'; // Khóa JWT
+const SECRET_KEY = 'your-secret-key';
 
 exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Truy vấn từ cơ sở dữ liệu
+
     const [adminRows] = await pool.query('SELECT * FROM db_admin WHERE username = ?', [username]);
     if (adminRows.length > 0) {
       const admin = adminRows[0];
 
-      // Kiểm tra mật khẩu
+
       if (password !== admin.password) {
         return res.status(401).json({ message: 'Mật khẩu không đúng' });
       }
 
-      // Tạo token JWT
+
       const token = jwt.sign({ id: admin.id, role: admin.role }, SECRET_KEY, { expiresIn: '1h' });
 
       return res.json({
@@ -27,18 +27,18 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Kiểm tra trong bảng db_customer
+
     const [customerRows] = await pool.query('SELECT * FROM db_customer WHERE username = ?', [username]);
 
     if (customerRows.length > 0) {
       const customer = customerRows[0];
 
-      // Kiểm tra mật khẩu
+
       if (!bcrypt.compareSync(password, customer.password)) {
         return res.status(401).json({ message: 'Mật khẩu không đúng.' });
       }
 
-      // Tạo token JWT cho customer
+
       const token = jwt.sign({ id: customer.id, role: 'customer' }, SECRET_KEY, { expiresIn: '1h' });
 
       return res.json({
@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Không tìm thấy tài khoản
+
     return res.status(401).json({ message: 'Tên đăng nhập không tồn tại.' });
 
   } catch (err) {

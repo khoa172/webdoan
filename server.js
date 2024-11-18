@@ -12,12 +12,12 @@ app.use(cors({
 
 app.use(express.json());
 
-// Route kiểm tra
+
 app.get('/', (req, res) => res.send('Backend server is running'));
 
-// Đăng ký routes
+
 app.use('/api/admin', adminRoutes);
 app.use('/api/customers', registerRoutes);
-// Khởi động server
+
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Backend đang chạy tại http://localhost:${PORT}`));

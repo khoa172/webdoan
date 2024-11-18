@@ -1,16 +1,16 @@
 const bcrypt = require('bcrypt');
-const pool = require('../db'); // Import kết nối database từ db.js
+const pool = require('../db'); 
 
 exports.registerUser = async (req, res) => {
   const { username, password, fullname, mail, phone, address } = req.body;
 
-  // Kiểm tra dữ liệu đầu vào
+
   if (!username || !password || !fullname || !mail || !phone || !address) {
     return res.status(400).json({ message: 'Vui lòng nhập đầy đủ thông tin.' });
   }
 
   try {
-    // Kiểm tra username hoặc email đã tồn tại
+
     const [existingUser] = await pool.query(
       'SELECT id FROM db_customer WHERE username = ? OR mail = ?',
       [username, mail]
@@ -19,13 +19,13 @@ exports.registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Tên đăng nhập hoặc email đã tồn tại.' });
     }
 
-    // Mã hóa mật khẩu
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Lấy thời gian hiện tại để lưu vào create_date
-    const createDate = new Date().toISOString(); // Format chuẩn ISO 8601
 
-    // Thêm thông tin người dùng vào database
+    const createDate = new Date().toISOString();
+
+
     await pool.query(
       `INSERT INTO db_customer (username, password, fullname, mail, phone, address, create_date) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
