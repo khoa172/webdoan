@@ -17,5 +17,12 @@
     "pinia": "^2.2.6",
     "vue": "^3.2.47",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "sass": "^1.81.0",
+    "sass-loader": "^16.0.3",
+    "vite-plugin-vuetify": "^2.0.4",
+    "vuetify": "^3.7.4"
   }
 }

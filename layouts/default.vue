@@ -1,16 +1,19 @@
 <template>
     <div>
         <defaultHeader/>
-        <NuxtPage />
+        <NuxtPage /><br>
+        <defaultFooter/>
     </div>
     
   </template>
 
   <script>
     import defaultHeader from '~/components/Header/defaultHeader.vue';
+    import defaultFooter from '~/components/Footer/defaultFooter.vue';
     export default {
         components: {
-            defaultHeader
+            defaultHeader,
+            defaultFooter
         }
     }
     </script>
