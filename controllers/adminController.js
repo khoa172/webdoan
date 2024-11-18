@@ -9,9 +9,6 @@ exports.login = async (req, res) => {
   try {
     // Truy vấn từ cơ sở dữ liệu
     const [adminRows] = await pool.query('SELECT * FROM db_admin WHERE username = ?', [username]);
-    if (adminRows.length === 0) {
-      return res.status(401).json({ message: 'Tên đăng nhập không tồn tại' });
-    }
     if (adminRows.length > 0) {
       const admin = adminRows[0];
 
