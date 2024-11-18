@@ -8,7 +8,7 @@
   <script setup>
   import { ref, onMounted } from 'vue';
   
-  // Lấy thông tin người dùng từ localStorage
+
   const user = ref({});
   onMounted(() => {
     const userData = localStorage.getItem('user');

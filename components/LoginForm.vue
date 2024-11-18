@@ -56,14 +56,14 @@ const submitForm = async () => {
     });
 
     if (response.token) {
-      // Lưu token và điều hướng
+
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
-       // Điều hướng dựa trên vai trò
+
        if (response.user.role === 'admin') {
-        router.push('/admin'); // Chuyển đến trang admin
+        router.push('/admin'); 
       } else if (response.user.role === 'customer') {
-        router.push('/my-account'); // Chuyển đến trang My Account
+        router.push('/my-account'); 
       }
     } else {
       throw new Error('Token không tồn tại');

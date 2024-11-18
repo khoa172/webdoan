@@ -4,7 +4,6 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-body">
-              <!-- Hiển thị LoginForm hoặc RegisterForm -->
               <LoginForm v-if="currentForm === 'login'" @switchToRegister="showRegisterForm" />
               <RegisterForm v-else @switchToLogin="showLoginForm" />
             </div>
@@ -19,7 +18,6 @@
   import LoginForm from './LoginForm.vue';
   import RegisterForm from './RegisterForm.vue';
   
-  // Quản lý trạng thái hiển thị form
   const currentForm = ref('login');
   
   const showRegisterForm = () => {

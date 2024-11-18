@@ -50,11 +50,11 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const isLoggedIn = ref(false); // Biến kiểm tra trạng thái đăng nhập
+const isLoggedIn = ref(false); 
 const user = ref({});
 const router = useRouter();
 
-// Kiểm tra trạng thái đăng nhập khi tải trang
+
 onMounted(() => {
   const token = localStorage.getItem('token');
   const userData = localStorage.getItem('user');
@@ -64,12 +64,12 @@ onMounted(() => {
   }
 });
 
-// Xử lý đăng xuất
+
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   isLoggedIn.value = false;
-  router.push('/auth'); // Điều hướng đến trang đăng nhập
+  router.push('/auth'); 
 };
 </script>
 
