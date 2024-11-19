@@ -49,9 +49,9 @@
                   <v-img
                     :src="product.image" height="240px" cover
                   ></v-img>
-                  <v-card-title>{{ product.name }}</v-card-title>
+                  <v-card-title class="text-capitalize">{{ product.name }}</v-card-title>
 
-                  <v-card-subtitle>{{ product.price }}</v-card-subtitle>
+                  <v-card-subtitle>{{ product.price }} VND</v-card-subtitle>
 
                   <v-card-actions>
                     <v-btn color="orange-lighten-2" text="Explore">Rend More</v-btn>
@@ -68,19 +68,43 @@ import data from "./data"
 const sortBy = ref("");
 const order = ref("asending");
 const products = ref(data);
-const name = ref("");
+const name = ref('');
 
 const filterdProducts = computed(() => {
   if(name.value){
-    return[...product.value].filter((item) =>{
-      return name.value
-        .toLocaleLowerCase()
-        .split(" ")
-        .every((v) => item.name.toLocaleLowerCase().includes(v));
-    });
-  }else{
-    return products.value;
+    return [...products.value].filter((item) =>{
+    return name.value.toLocaleLowerCase().split(' ').every((v) => item.name.toLocaleLowerCase().includes(v));
+  });
+  }else {
+      return products.value;
   }
 });
+
+const sortProducts = () => {
+  if(order.value == 'deasending'){
+    products.value.sort(dynamicSort('-' + sortBy.value));
+  }else{
+    products.value.sort(dynamicSort(sortBy.value));
+  }
+};
+
+const dynamicSort = (property) => {
+  let sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return (a,b) => {
+        const result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    };
+};
+
+watch(sortBy, () => {
+  sortProducts();
+})
+watch(order, () => {
+  sortProducts();
+})
 </script>
 

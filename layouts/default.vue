@@ -4,7 +4,6 @@
         <NuxtPage /><br>
         <defaultFooter/>
     </div>
-    
   </template>
 
   <script>
