@@ -19,7 +19,7 @@
     <v-divider></v-divider>
 
     <div>
-      <strong class="td">NẾU CẦN SỰ HỖ TRỢ HÃY LIÊN HỆ CHO CHÚNG TÔI THÔNG QUA CÁC SOCIAL MEDIA</strong> <br>
+      <strong class="td">NẾU CẦN SỰ HỖ TRỢ HÃY LIÊN HỆ ĐẾN CHÚNG TÔI THÔNG QUA CÁC SOCIAL MEDIA</strong> <br>
       <strong>CẢM ƠN BẠN ĐÃ ĐẾN VỚI WEBSITE CỦA CHÚNG TÔI!</strong>
     </div>
   </v-footer>
