@@ -43,6 +43,7 @@ const username = ref('');
 const password = ref('');
 const error = ref('');
 const router = useRouter();
+const { public: { apiBase } } = useRuntimeConfig();
 
 const submitForm = async () => {
   try {
@@ -59,7 +60,7 @@ const submitForm = async () => {
 
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
-
+      localStorage.setItem('userId', response.user.id);
        if (response.user.role === 'admin') {
         router.push('/admin'); 
       } else if (response.user.role === 'customer') {

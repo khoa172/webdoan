@@ -40,6 +40,7 @@ export default {
 }
 </script>
 <style>
+
 .td{
   text-align: center;
   font-size: 8pt;

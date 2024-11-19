@@ -7,17 +7,21 @@
             <div class="user-menu">
               <ul>
                 <li v-if="isLoggedIn">
-                  <i class="fa fa-user"></i> 
+                  <i class="fa fa-user"></i>
                   <NuxtLink to="/my-account">My Account</NuxtLink>
                 </li>
                 <li><a href=""><i class="fa fa-heart"></i> Wishlist</a></li>
                 <li><a href=""><i class="fa fa-user"></i> My Cart</a></li>
                 <li><a href=""><i class="fa fa-user"></i> Checkout</a></li>
+                <li v-if="isLoggedIn && isAdmin">
+                  <i class="fa fa-cogs"></i>
+                  <NuxtLink to="/admin">Quản Lý</NuxtLink>
+                </li>
                 <li v-if="isLoggedIn">
                   <a href="#" @click.prevent="logout"><i class="fa fa-sign-out"></i> Logout</a>
                 </li>
                 <li v-else>
-                  <i class="fa fa-user"></i> 
+                  <i class="fa fa-user"></i>
                   <NuxtLink to="/auth">Login</NuxtLink>
                 </li>
               </ul>
@@ -25,18 +29,27 @@
           </div>
         </div>
       </div>
-    </div> 
+    </div>
     <div class="site-branding-area">
       <div class="container">
         <div class="row align-items-center">
+          <!-- Phần logo -->
           <div class="col-sm-6">
             <div class="logo">
-              <h1><a href="./"><img src="/images/logo.png" alt="logo" class="responsive-img"/></a></h1>
+              <h1>
+                <a href="./">
+                  <img src="/images/logo.png" alt="logo" class="responsive-img" />
+                </a>
+              </h1>
             </div>
           </div>
+          <!-- Phần shopping item -->
           <div class="col-sm-6">
             <div class="shopping-item">
-              <a href="#">Cart - <span class="cart-amunt">$0</span> <i class="fa fa-shopping-cart"></i></a>
+              <a href="#">
+                Cart - <span class="cart-amunt">$0</span>
+                <i class="fa fa-shopping-cart"></i>
+              </a>
             </div>
           </div>
         </div>
@@ -46,32 +59,37 @@
 </template>
 
 
+
+
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const isLoggedIn = ref(false); 
+const isLoggedIn = ref(false);
+const isAdmin = ref(false); 
 const user = ref({});
 const router = useRouter();
-
 
 onMounted(() => {
   const token = localStorage.getItem('token');
   const userData = localStorage.getItem('user');
+
   if (token && userData) {
     isLoggedIn.value = true;
     user.value = JSON.parse(userData);
+    isAdmin.value = user.value.role === 'admin'; 
   }
 });
-
 
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   isLoggedIn.value = false;
-  router.push('/auth'); 
+  isAdmin.value = false;
+  router.push('/auth');
 };
 </script>
+
 
 <style scoped>
 .header-area {

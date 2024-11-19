@@ -95,7 +95,7 @@
   
   const submitForm = async () => {
     try {
-      const response = await $fetch('/api/customers/register', {
+      const response = await $fetch('/api/customersregister/register', {
         method: 'POST',
         baseURL: useRuntimeConfig().public.apiBase,
         body: {
