@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `db_admin` (
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `fullname` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `mail` varchar(255) NOT NULL,
   `phone` varchar(10) NOT NULL,
   `address` varchar(255) NOT NULL,
   `role` enum('admin','manager') NOT NULL,
