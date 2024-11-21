@@ -31,7 +31,7 @@ const fetchUserDetails = async () => {
     const userData = JSON.parse(localStorage.getItem('user'));
     if (!userData || !userData.id) {
       console.error('User ID không tồn tại trong localStorage.');
-      router.push('/auth'); // Điều hướng đến trang đăng nhập nếu không tìm thấy user ID
+      router.push('/auth'); 
       return;
     }
 

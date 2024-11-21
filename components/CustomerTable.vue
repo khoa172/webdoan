@@ -35,7 +35,3 @@
   defineEmits(['edit', 'delete']); // Sự kiện khi sửa hoặc xóa
   </script>
   
-  <style scoped>
-  /* CSS tùy chỉnh */
-  </style>
-  

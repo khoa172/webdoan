@@ -12,16 +12,24 @@
           required
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-3 position-relative">
         <label for="password" class="form-label">Mật khẩu</label>
         <input
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           v-model="password"
           class="form-control"
           id="password"
           placeholder="Nhập mật khẩu"
           required
         />
+        <button
+          type="button"
+          class="btn btn-sm btn-light position-absolute end-0 top-50 translate-middle-y"
+          @click="togglePasswordVisibility"
+          style="right: 10px;"
+        >
+          {{ showPassword ? 'Ẩn' : 'Hiện' }}
+        </button>
       </div>
       <button type="submit" class="btn btn-primary w-100 mt-3">Đăng nhập</button>
       <p v-if="error" class="text-danger mt-3 text-center">{{ error }}</p>
@@ -35,6 +43,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -42,8 +51,13 @@ import { useRouter } from 'vue-router';
 const username = ref('');
 const password = ref('');
 const error = ref('');
+const showPassword = ref(false);
 const router = useRouter();
 const { public: { apiBase } } = useRuntimeConfig();
+
+const togglePasswordVisibility = () => {
+  showPassword.value = !showPassword.value;
+};
 
 const submitForm = async () => {
   try {
@@ -57,14 +71,13 @@ const submitForm = async () => {
     });
 
     if (response.token) {
-
       localStorage.setItem('token', response.token);
       localStorage.setItem('user', JSON.stringify(response.user));
       localStorage.setItem('userId', response.user.id);
-       if (response.user.role === 'admin') {
-        router.push('/admin'); 
+      if (response.user.role === 'admin') {
+        router.push('/admin');
       } else if (response.user.role === 'customer') {
-        router.push('/my-account'); 
+        router.push('/my-account');
       }
     } else {
       throw new Error('Token không tồn tại');
@@ -74,5 +87,6 @@ const submitForm = async () => {
   }
 };
 </script>
+
 
 
