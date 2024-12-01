@@ -49,15 +49,29 @@ exports.getAdminById = async (req, res) => {
 // Cập nhật thông tin khách hàng
 exports.updateCustomer = async (req, res) => {
   const { id } = req.params;
-  const { fullname, mail, phone, address } = req.body;
-
-  // Kiểm tra dữ liệu đầu vào
-  if (!fullname || !mail || !phone || !address) {
-    return res.status(400).json({ message: 'Vui lòng điền đầy đủ thông tin' });
-  }
+  const { fullname, mail, phone, address, old_password, new_password } = req.body;
 
   try {
-    // Cập nhật thông tin khách hàng
+    // Lấy thông tin người dùng
+    const [rows] = await pool.query('SELECT * FROM db_customer WHERE id = ?', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Không tìm thấy khách hàng.' });
+    }
+
+    const customer = rows[0];
+
+    // Kiểm tra mật khẩu cũ
+    if (!bcrypt.compareSync(old_password, customer.password)) {
+      return res.status(401).json({ message: 'Mật khẩu cũ không đúng.' });
+    }
+
+    // Cập nhật mật khẩu mới nếu có
+    if (new_password) {
+      const hashedPassword = bcrypt.hashSync(new_password, 10);
+      await pool.query('UPDATE db_customer SET password = ? WHERE id = ?', [hashedPassword, id]);
+    }
+
+    // Cập nhật thông tin cá nhân
     await pool.query(
       'UPDATE db_customer SET fullname = ?, mail = ?, phone = ?, address = ? WHERE id = ?',
       [fullname, mail, phone, address, id]
@@ -66,7 +80,7 @@ exports.updateCustomer = async (req, res) => {
     res.json({ message: 'Cập nhật thông tin khách hàng thành công!' });
   } catch (error) {
     console.error('Lỗi khi cập nhật thông tin khách hàng:', error);
-    res.status(500).json({ message: 'Lỗi khi cập nhật thông tin khách hàng' });
+    res.status(500).json({ message: 'Lỗi khi cập nhật thông tin khách hàng.' });
   }
 };
 
