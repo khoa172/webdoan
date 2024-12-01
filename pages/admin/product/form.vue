@@ -39,11 +39,47 @@
           <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
         </select>
       </div>
+
+      <!-- Các thông số kỹ thuật -->
       <div class="mb-3">
-        <label for="description" class="form-label">Mô Tả</label>
-        <textarea id="description" v-model="form.description" class="form-control" rows="4"></textarea>
+        <label for="screen" class="form-label">Màn Hình</label>
+        <input type="text" id="screen" v-model="form.screen" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="ram" class="form-label">RAM</label>
+        <input type="text" id="ram" v-model="form.ram" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="cpu" class="form-label">CPU</label>
+        <input type="text" id="cpu" v-model="form.cpu" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="memory" class="form-label">Bộ Nhớ</label>
+        <input type="text" id="memory" v-model="form.memory" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="operating_system" class="form-label">Hệ Điều Hành</label>
+        <input type="text" id="operating_system" v-model="form.operating_system" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="front_camera" class="form-label">Camera Trước</label>
+        <input type="text" id="front_camera" v-model="form.front_camera" class="form-control" />
+      </div>
+      <div class="mb-3">
+        <label for="rear_camera" class="form-label">Camera Sau</label>
+        <input type="text" id="rear_camera" v-model="form.rear_camera" class="form-control" />
       </div>
 
+      <div class="mb-3">
+        <label for="description" class="form-label">Mô Tả</label>
+        <textarea
+          id="description"
+          v-model="form.description"
+          class="form-control"
+          rows="4"
+          placeholder="Nhập mô tả sản phẩm..."
+        ></textarea>
+      </div>
       <!-- Hình ảnh -->
       <div class="mb-3">
         <label for="images" class="form-label">Hình Ảnh</label>
@@ -82,6 +118,7 @@
 
 
 
+
   
 <script setup>
 import { ref, onMounted } from "vue";
@@ -101,6 +138,13 @@ const form = ref({
   quantity: 0,
   status: "còn hàng",
   description: "",
+  screen: "",
+  ram: "",
+  cpu: "",
+  memory: "",
+  operating_system: "",
+  front_camera: "",
+  rear_camera: "",
 });
 const brands = ref([]); // Danh sách thương hiệu
 const categories = ref([]); // Danh sách danh mục
