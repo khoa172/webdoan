@@ -47,7 +47,7 @@
           <div class="col-sm-6">
             <div class="shopping-item">
               <a href="#">
-                Cart - <span class="cart-amunt">$0</span>
+                Cart - <span class="cart-amunt">VND 0</span>
                 <i class="fa fa-shopping-cart"></i>
               </a>
             </div>

@@ -19,7 +19,7 @@
           <textarea v-model="form.address" class="form-control" id="address" rows="3" required></textarea>
         </div>
         <button type="submit" class="btn btn-success">{{ isEdit ? "Cập Nhật" : "Thêm" }}</button>
-        <button class="btn btn-secondary" @click="goBack">Hủy</button>
+        <button  type="button" class="btn btn-secondary" @click="goBack">Hủy</button>
       </form>
     </div>
   </template>
@@ -27,7 +27,8 @@
   <script setup>
   import { ref } from 'vue';
   import { useRouter, useRoute } from 'vue-router';
-  
+  import Swal from 'sweetalert2';
+
   const router = useRouter();
   const route = useRoute();
   const isEdit = ref(false);
@@ -49,23 +50,43 @@
   
   // Submit form
   const handleSubmit = async () => {
-    const { public: { apiBase } } = useRuntimeConfig();
-    try {
-      if (isEdit.value) {
-        await $fetch(`${apiBase}/api/customers/${form.value.id}`, {
-          method: 'PUT',
-          body: { ...form.value },
-        });
-      } else {
-        await $fetch(`${apiBase}/api/customers`, {
-          method: 'POST',
-          body: { ...form.value },
-        });
-      }
-      router.push('/admin'); // Quay lại trang admin sau khi hoàn tất
-    } catch (error) {
-      console.error('Lỗi khi xử lý form khách hàng:', error);
+    const result = await Swal.fire({
+    title: isEdit.value ? 'Xác nhận cập nhật' : 'Xác nhận thêm mới',
+    text: isEdit.value
+      ? 'Bạn có chắc chắn muốn cập nhật thông tin khách hàng này?'
+      : 'Bạn có chắc chắn muốn thêm khách hàng này?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: isEdit.value ? 'Cập nhật' : 'Thêm',
+    cancelButtonText: 'Hủy',
+  });
+
+  if (!result.isConfirmed) {
+    return; 
+  }
+
+  const { public: { apiBase } } = useRuntimeConfig();
+  try {
+    if (isEdit.value) {
+      await $fetch(`${apiBase}/api/customers/${form.value.id}`, {
+        method: 'PUT',
+        body: { ...form.value },
+      });
+      Swal.fire('Thành công!', 'Thông tin khách hàng đã được cập nhật.', 'success');
+    } else {
+      await $fetch(`${apiBase}/api/customers`, {
+        method: 'POST',
+        body: { ...form.value },
+      });
+      Swal.fire('Thành công!', 'Khách hàng mới đã được thêm.', 'success');
     }
+    router.push('/admin');
+  } catch (error) {
+    console.error('Lỗi khi xử lý form khách hàng:', error);
+    Swal.fire('Lỗi!', 'Không thể xử lý yêu cầu.', 'error');
+  }
   };
   
   // Hủy và quay lại

@@ -16,6 +16,7 @@ definePageMeta({
 import { ref, onMounted } from 'vue';
 import CustomerTable from '~/components/CustomerTable.vue';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 const customers = ref([]);
 const router = useRouter();
@@ -32,11 +33,28 @@ const fetchCustomers = async () => {
 
 // Xóa khách hàng
 const deleteCustomer = async (id) => {
+  const result = await Swal.fire({
+    title: 'Xác nhận xóa',
+    text: "Bạn có chắc chắn muốn xóa khách hàng này? Hành động này không thể hoàn tác!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Xóa',
+    cancelButtonText: 'Hủy',
+  });
+
+  if (!result.isConfirmed) {
+    return; // Người dùng chọn "Hủy"
+  }
+
   try {
     await $fetch(`${apiBase}/api/customers/${id}`, { method: 'DELETE' });
-    fetchCustomers();
+    Swal.fire('Đã xóa!', 'Khách hàng đã được xóa thành công.', 'success');
+    fetchCustomers(); // Refresh danh sách khách hàng
   } catch (error) {
     console.error('Lỗi khi xóa khách hàng:', error);
+    Swal.fire('Lỗi!', 'Không thể xóa khách hàng. Vui lòng thử lại.', 'error');
   }
 };
 
@@ -51,7 +69,7 @@ const editCustomer = (customer) => {
   });
 };
 
-// Lấy dữ liệu khi trang được tải
+
 onMounted(() => {
   fetchCustomers();
 });
