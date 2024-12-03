@@ -29,7 +29,7 @@
             </option>
           </select>
           <label>Filter by Category:</label>
-          <select class="form-select" v-model="selectedCategory">
+          <select class="form-select mb-3" v-model="selectedCategory">
             <option value="">All Categories</option>
             <option
               v-for="category in categories"
@@ -37,6 +37,13 @@
               :value="category.id"
             >
               {{ category.name }}
+            </option>
+          </select>
+          <label>Filter by RAM:</label>
+          <select class="form-select" v-model="selectedRam">
+            <option value="">All RAM</option>
+            <option v-for="ram in ramOptions" :key="ram" :value="ram">
+              {{ ram }}
             </option>
           </select>
         </div>
@@ -80,20 +87,22 @@ import { useRouter } from "vue-router";
 const products = ref([]);
 const brands = ref([]);
 const categories = ref([]);
+const ramOptions = ref(["4 GB", "6 GB", "8 GB", "12 GB"]); // Các tùy chọn RAM
 const searchQuery = ref("");
 const sortBy = ref("");
 const sortOrder = ref("asc");
 const selectedBrand = ref("");
 const selectedCategory = ref("");
+const selectedRam = ref("");
 const router = useRouter();
 
-// Lấy danh sách sản phẩm, thương hiệu và danh mục từ API
+// Lấy danh sách sản phẩm, thương hiệu, danh mục
 const fetchProducts = async () => {
   try {
     const response = await $fetch("http://localhost:3001/api/products");
     products.value = response.map((product) => ({
       ...product,
-      image: JSON.parse(product.images || "[]")[0] || "placeholder.jpg", // Lấy hình ảnh đầu tiên
+      image: JSON.parse(product.images || "[]")[0] || "placeholder.jpg",
     }));
   } catch (error) {
     console.error("Lỗi khi lấy danh sách sản phẩm:", error);
@@ -113,24 +122,24 @@ const fetchBrandsAndCategories = async () => {
 const filteredProducts = computed(() => {
   let filtered = [...products.value];
 
-  // Lọc theo tìm kiếm
   if (searchQuery.value) {
     filtered = filtered.filter((p) =>
       p.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
   }
 
-  // Lọc theo thương hiệu
   if (selectedBrand.value) {
     filtered = filtered.filter((p) => p.id_brand === selectedBrand.value);
   }
 
-  // Lọc theo danh mục
   if (selectedCategory.value) {
     filtered = filtered.filter((p) => p.id_category === selectedCategory.value);
   }
 
-  // Sắp xếp sản phẩm
+  if (selectedRam.value) {
+    filtered = filtered.filter((p) => p.ram === selectedRam.value);
+  }
+
   if (sortBy.value) {
     filtered.sort((a, b) => {
       if (sortOrder.value === "asc") {
@@ -143,7 +152,6 @@ const filteredProducts = computed(() => {
   return filtered;
 });
 
-// Chuyển đến trang chi tiết sản phẩm
 const goToDetail = (productId) => {
   router.push(`/product/${productId}`);
 };
