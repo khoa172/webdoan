@@ -37,7 +37,7 @@
           <div class="col-sm-6">
             <div class="logo">
               <h1>
-                <a href="./">
+                <a href="/">
                   <img src="/images/logo.png" alt="logo" class="responsive-img" />
                 </a>
               </h1>
