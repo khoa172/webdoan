@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `db_product` (
   `rear_camera` varchar(255) NOT NULL,
   `user` varchar(255) NOT NULL,
   `create_date` varchar(255) NOT NULL,
-  `image` varchar(255) NOT NULL,
+  `images` varchar(255) NULL,
   PRIMARY KEY (`id`),
   KEY `id_brand` (`id_brand`),
   KEY `id_category` (`id_category`)
