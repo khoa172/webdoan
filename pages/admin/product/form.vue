@@ -47,7 +47,13 @@
       </div>
       <div class="mb-3">
         <label for="ram" class="form-label">RAM</label>
-        <input type="text" id="ram" v-model="form.ram" class="form-control" />
+        <select id="ram" v-model="form.ram" class="form-control" required>
+          <option disabled value="">Chọn RAM</option>
+          <option value="4 GB">4 GB</option>
+          <option value="6 GB">6 GB</option>
+          <option value="8 GB">8 GB</option>
+          <option value="12 GB">12 GB</option>
+        </select>
       </div>
       <div class="mb-3">
         <label for="cpu" class="form-label">CPU</label>
