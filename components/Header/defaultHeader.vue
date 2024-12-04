@@ -3,7 +3,7 @@
     <div class="header-area">
       <div class="container">
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-9">
             <div class="user-menu">
               <ul>
                 <li v-if="isLoggedIn">
@@ -45,13 +45,11 @@
           </div>
           <!-- Phần shopping item -->
           <div class="col-sm-6">
-            <div class="shopping-item">
-                    <NuxtLink to="/cart/cart">
-                     <span class="cart-amunt">{{ cart.total_price }} VND</span>
-                    <i class="fa fa-shopping-cart"></i>
+            <NuxtLink to="/cart/cart">
+            <div class="shopping-item fa fa-shopping-cart">
                     <span class="product-count">{{ cart.total_num }}</span>
-                  </NuxtLink>
             </div>
+          </NuxtLink>
           </div>
         </div>
       </div>
@@ -112,7 +110,9 @@ const logout = () => {
   padding: 0;
 }
 .user-menu li {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center; /* Căn chỉnh icon và văn bản theo chiều dọc */
+  margin-right: 10px; /* Nếu muốn thêm khoảng cách giữa các mục */
 }
 .user-menu li a {
   display: block;
@@ -163,10 +163,11 @@ const logout = () => {
 .shopping-item {
   border: 1px solid #ddd;
   float: right;
-  font-size: 18px;
+  font-size: 30px;
   margin-top: 40px;
   padding: 10px;
   position: relative;
+  border: none; /* Xóa border bao quanh */
 }
 .shopping-item a {
   color: #666;

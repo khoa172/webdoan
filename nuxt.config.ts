@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     'bootstrap/dist/css/bootstrap.min.css',
     'vuetify/styles', // Thêm Vuetify styles
     '@mdi/font/css/materialdesignicons.css', // Thêm MDI icons
+    'font-awesome/css/font-awesome.css',  // Thêm Font Awesome CSS
   ],
 
   // Cấu hình build để Vuetify được biên dịch đúng
