@@ -19,12 +19,11 @@ export default defineNuxtConfig({
   vite: {
     plugins: [vuetify()] // Thêm Vuetify plugin cho Vite
   },
-
+  
   runtimeConfig: {
     public: {
       apiBase: 'http://localhost:3001',
     },
   },
-
   modules: ['@pinia/nuxt'],
 });

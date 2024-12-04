@@ -46,10 +46,11 @@
           <!-- Phần shopping item -->
           <div class="col-sm-6">
             <div class="shopping-item">
-              <a href="#">
-                Cart - <span class="cart-amunt">VND 0</span>
-                <i class="fa fa-shopping-cart"></i>
-              </a>
+                    <NuxtLink to="/cart/cart">
+                     <span class="cart-amunt">{{ cart.total_price }} VND</span>
+                    <i class="fa fa-shopping-cart"></i>
+                    <span class="product-count">{{ cart.total_num }}</span>
+                  </NuxtLink>
             </div>
           </div>
         </div>
@@ -62,9 +63,11 @@
 
 
 <script setup>
+import { useCartStore } from '@/stores/cart'; // Import store
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+const cart = useCartStore(); // Access cart store
 const isLoggedIn = ref(false);
 const isAdmin = ref(false); 
 const user = ref({});
@@ -73,21 +76,26 @@ const router = useRouter();
 onMounted(() => {
   const token = localStorage.getItem('token');
   const userData = localStorage.getItem('user');
+  cart.loadCartFromLocalStorage(); // Thêm dòng này để tải giỏ hàng từ localStorage
 
   if (token && userData) {
     isLoggedIn.value = true;
     user.value = JSON.parse(userData);
     isAdmin.value = user.value.role === 'admin'; 
   }
+  cart.initializeCustomer(); // Initialize customer info from localStorage when component is mounted
 });
 
 const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('cart'); // Xóa giỏ hàng khỏi localStorage
   isLoggedIn.value = false;
   isAdmin.value = false;
+  cart.clearCart(); // Xóa giỏ hàng trong store
   router.push('/auth');
 };
+  
 </script>
 
 

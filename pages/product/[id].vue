@@ -31,7 +31,8 @@
               <!-- Nút hành động -->
               <div class="mt-4">
                 <button class="btn btn-primary btn-lg me-3">Mua Ngay</button>
-                <button class="btn btn-outline-secondary btn-lg">Thêm Vào Giỏ Hàng</button>
+                <button class="btn btn-outline-secondary btn-lg" 
+                @click="addToCart">Thêm Vào Giỏ Hàng</button>
               </div>
             </div>
           </div>
@@ -48,7 +49,9 @@
   <script setup>
   import { ref, onMounted } from "vue";
   import { useRoute } from "vue-router";
-  
+  import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
+
+  const cartStore = useCartStore(); // Khởi tạo store giỏ hàng
   const route = useRoute();
   const product = ref(null);
   
@@ -66,6 +69,13 @@
     }
   };
   
+  // Thêm sản phẩm vào giỏ hàng
+const addToCart = () => {
+  if (product.value) {
+    cartStore.addToCart(product.value); // Gọi hành động addToCart trong store
+  }
+};
+
   onMounted(fetchProductDetails);
   </script>
   
