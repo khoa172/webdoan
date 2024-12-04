@@ -19,14 +19,14 @@ export const useCartStore = defineStore('cart', {
 
     // Thêm sản phẩm vào giỏ hàng
     addToCart(product) {
-        const existingItem = this.items.find((item) => item.id === product.id);
-        if (existingItem) {
-          existingItem.quantity += 1; // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
-        } else {
-          this.items.push({ ...product, quantity: 1 }); // Thêm sản phẩm mới vào giỏ hàng
-        }
-        this.updateCartInfo();
-        this.saveCartToLocalStorage(); // Lưu lại giỏ hàng sau khi thay đổi
+      const existingItem = this.items.find((item) => item.id === product.id);
+      if (existingItem) {
+        existingItem.quantity += 1; // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+      } else {
+        this.items.push({ ...product, quantity: 1 }); // Thêm sản phẩm mới vào giỏ hàng
+      }
+      this.updateCartInfo();
+      this.saveCartToLocalStorage(); // Lưu lại giỏ hàng sau khi thay đổi
     },
 
     // Cập nhật thông tin giỏ hàng
@@ -37,11 +37,20 @@ export const useCartStore = defineStore('cart', {
 
     // Xóa sản phẩm khỏi giỏ hàng
     removeFromCart(productId) {
-        this.items = this.items.filter((item) => item.id !== productId);
-        this.updateCartInfo();
-        this.saveCartToLocalStorage(); // Lưu lại giỏ hàng sau khi thay đổi
+      this.items = this.items.filter((item) => item.id !== productId);
+      this.updateCartInfo();
+      this.saveCartToLocalStorage(); // Lưu lại giỏ hàng sau khi thay đổi
     },
 
+    // Thêm phương thức giảm số lượng sản phẩm
+    decreaseQuantity(productId) {
+        const item = this.items.find((item) => item.id === productId);
+        if (item && item.quantity > 1) {
+          item.quantity -= 1;
+          this.updateCartInfo();
+          this.saveCartToLocalStorage();
+        }
+    },
     // Xóa tất cả sản phẩm trong giỏ hàng
     clearCart() {
       this.items = [];
@@ -49,16 +58,16 @@ export const useCartStore = defineStore('cart', {
     },
     // Lưu giỏ hàng vào localStorage
     saveCartToLocalStorage() {
-        localStorage.setItem('cart', JSON.stringify(this.items));
+      localStorage.setItem('cart', JSON.stringify(this.items));
     },
     
     // Tải giỏ hàng từ localStorage khi trang được tải lại
     loadCartFromLocalStorage() {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
+      const savedCart = localStorage.getItem('cart');
+      if (savedCart) {
         this.items = JSON.parse(savedCart);
         this.updateCartInfo();
-        }
-     },
+      }
+    },
   },
 });

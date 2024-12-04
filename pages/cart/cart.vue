@@ -11,7 +11,7 @@
       <div v-else>
         <div class="list-group">
           <div class="list-group-item" v-for="item in cartItems" :key="item.id">
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center">
               <div class="d-flex">
                 <!-- Hiển thị hình ảnh sản phẩm -->
                 <img :src="item.image" alt="product image" class="img-thumbnail" width="100" height="100" />
@@ -20,21 +20,34 @@
                   <p>{{ item.price }} VND x {{ item.quantity }} = {{ item.price * item.quantity }} VND</p>
                 </div>
               </div>
-              <div>
-                <button class="btn btn-danger" @click="removeFromCart(item.id)">Xóa</button>
-              </div>
+              
+                <div class="d-flex">
+                    <!-- Div chứa nút tăng giảm -->
+                    <div class="d-flex align-items-center">
+                        <!-- Nút giảm số lượng -->
+                        <button class="btn btn-secondary btn-sm" @click="decreaseQuantity(item.id)">-</button>
+                        <!-- Nút tăng số lượng -->
+                        <button class="btn btn-secondary btn-sm mx-1" @click="increaseQuantity(item.id)">+</button>
+                    </div>
+                    <!-- Div chứa nút xóa với khoảng cách -->
+                    <div class="ml-3">
+                        <button class="btn btn-danger btn-sm" @click="removeFromCart(item.id)">Xóa</button>
+                    </div>
+               </div>
             </div>
           </div>
         </div>
   
-        <!-- Tổng số lượng và tổng giá trị -->
-        <div class="mt-3">
-          <h4>Tổng Số Lượng: {{ totalNum }} sản phẩm</h4>
-          <h4>Tổng Giá Trị: {{ totalPrice }} VND</h4>
+        <!-- Tổng số lượng và tổng giá trị, và nút thanh toán được căn sang bên phải -->
+        <div class="mt-3 d-flex justify-content-end">
+          <div>
+            <h4>Tổng Số Lượng: {{ totalNum }} sản phẩm</h4>
+            <h4>Tổng Giá Trị: {{ totalPrice }} VND</h4>
+          </div>
         </div>
   
-        <!-- Nút thanh toán hoặc gửi giỏ hàng -->
-        <div class="mt-4">
+        <div class="mt-3 d-flex justify-content-end">
+          <!-- Nút thanh toán -->
           <button class="btn btn-success" @click="checkout">Thanh Toán</button>
         </div>
       </div>
@@ -55,17 +68,26 @@
     cartStore.removeFromCart(productId); // Gọi hành động xóa sản phẩm khỏi giỏ hàng
   };
   
+  // Giảm số lượng sản phẩm
+  const decreaseQuantity = (productId) => {
+    cartStore.decreaseQuantity(productId); // Gọi hành động giảm số lượng
+  };
+  
+  // Tăng số lượng sản phẩm
+  const increaseQuantity = (productId) => {
+    cartStore.addToCart({ id: productId }); // Gọi hành động thêm sản phẩm vào giỏ hàng để tăng số lượng
+  };
+  
   // Hàm thanh toán (có thể gửi dữ liệu giỏ hàng lên backend)
   const checkout = async () => {
     try {
-      // Giả sử bạn cần gửi dữ liệu giỏ hàng lên API để thanh toán
       const response = await $fetch("http://localhost:3001/api/checkout", {
         method: "POST",
         body: {
-          id_customer: cartStore.id_customer, // Gửi id_customer
-          total_num: cartStore.total_num, // Gửi tổng số lượng sản phẩm
-          total_price: cartStore.total_price, // Gửi tổng giá trị giỏ hàng
-          items: cartStore.items, // Gửi danh sách các sản phẩm trong giỏ
+          id_customer: cartStore.id_customer,
+          total_num: cartStore.total_num,
+          total_price: cartStore.total_price,
+          items: cartStore.items,
         },
       });
       console.log("Thanh toán thành công", response);
@@ -75,3 +97,22 @@
     }
   };
   </script>
+  
+  <style scoped>
+  /* Căn chỉnh các nút trong cùng một dòng */
+  .d-flex.align-items-center {
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Tăng khoảng cách giữa các nút */
+  .mx-2 {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Căn chỉnh các thông tin tổng và nút thanh toán sang bên phải */
+  .d-flex.justify-content-end {
+    justify-content: flex-end;
+  }
+  </style>
