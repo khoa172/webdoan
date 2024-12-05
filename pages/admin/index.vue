@@ -1,24 +1,39 @@
 <template>
   <div class="container mt-5">
-    <h1 class="mb-4">Quản Lý Khách Hàng</h1>
+    <h1 class="mb-4 text-center">Quản Lý Khách Hàng</h1>
+    
+    <!-- Tìm kiếm khách hàng -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <input
+        type="text"
+        class="form-control w-50"
+        placeholder="Tìm kiếm khách hàng..."
+        v-model="searchQuery"
+      />
+    </div>
+
+    <!-- Bảng khách hàng -->
     <CustomerTable
-      :customers="customers"
+      :customers="filteredCustomers"
       @edit="editCustomer"
       @delete="deleteCustomer"
     />
   </div>
 </template>
 
+
 <script setup>
 definePageMeta({
   layout: 'admin',
 });
-import { ref, onMounted } from 'vue';
+
+import { ref, onMounted, computed } from 'vue';
 import CustomerTable from '~/components/CustomerTable.vue';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 
 const customers = ref([]);
+const searchQuery = ref(''); // Từ khóa tìm kiếm
 const router = useRouter();
 const { public: { apiBase } } = useRuntimeConfig();
 
@@ -30,6 +45,14 @@ const fetchCustomers = async () => {
     console.error('Lỗi khi lấy danh sách khách hàng:', error);
   }
 };
+
+// Lọc khách hàng theo từ khóa tìm kiếm
+const filteredCustomers = computed(() => {
+  return customers.value.filter((customer) =>
+    customer.fullname?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    customer.email?.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
 
 // Xóa khách hàng
 const deleteCustomer = async (id) => {
@@ -69,9 +92,9 @@ const editCustomer = (customer) => {
   });
 };
 
-
 onMounted(() => {
   fetchCustomers();
 });
 </script>
+
 
