@@ -10,9 +10,6 @@
                   <i class="fa fa-user"></i>
                   <NuxtLink to="/my-account">My Account</NuxtLink>
                 </li>
-                <li><a href=""><i class="fa fa-heart"></i> Wishlist</a></li>
-                <li><a href=""><i class="fa fa-user"></i> My Cart</a></li>
-                <li><a href=""><i class="fa fa-user"></i> Checkout</a></li>
                 <li v-if="isLoggedIn && isAdmin">
                   <i class="fa fa-cogs"></i>
                   <NuxtLink to="/admin">Quản Lý</NuxtLink>

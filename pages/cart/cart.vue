@@ -1,118 +1,231 @@
 <template>
-    <div class="container mt-5">
-      <h2>Giỏ Hàng</h2>
-  
-      <!-- Nếu giỏ hàng trống -->
-      <div v-if="cartItems.length === 0">
-        <p>Giỏ hàng của bạn hiện tại trống.</p>
-      </div>
-  
-      <!-- Nếu giỏ hàng có sản phẩm -->
-      <div v-else>
-        <div class="list-group">
-          <div class="list-group-item" v-for="item in cartItems" :key="item.id">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="d-flex">
-                <!-- Hiển thị hình ảnh sản phẩm -->
-                <img :src="item.image" alt="product image" class="img-thumbnail" width="100" height="100" />
-                <div class="ml-3">
-                  <h5>{{ item.name }}</h5>
-                  <p>{{ item.price }} VND x {{ item.quantity }} = {{ item.price * item.quantity }} VND</p>
-                </div>
-              </div>
-              
-                <div class="d-flex">
-                    <!-- Div chứa nút tăng giảm -->
-                    <div class="d-flex align-items-center">
-                        <!-- Nút giảm số lượng -->
-                        <button class="btn btn-secondary btn-sm" @click="decreaseQuantity(item.id)">-</button>
-                        <!-- Nút tăng số lượng -->
-                        <button class="btn btn-secondary btn-sm mx-1" @click="increaseQuantity(item.id)">+</button>
-                    </div>
-                    <!-- Div chứa nút xóa với khoảng cách -->
-                    <div class="ml-3">
-                        <button class="btn btn-danger btn-sm" @click="removeFromCart(item.id)">Xóa</button>
-                    </div>
-               </div>
+  <div class="container mt-5">
+    <h2 class="mb-4 text-center">Giỏ Hàng</h2>
+
+    <!-- Nếu giỏ hàng trống -->
+    <div v-if="cartItems.length === 0" class="text-center py-5">
+      <p class="fs-5 text-muted">Giỏ hàng của bạn hiện tại trống.</p>
+    </div>
+
+    <!-- Nếu giỏ hàng có sản phẩm -->
+    <div v-else>
+      <div class="cart-list">
+        <div
+          class="cart-item row align-items-center mb-3 p-3 border rounded"
+          v-for="item in cartItems"
+          :key="item.id"
+        >
+          <!-- Cột Checkbox -->
+          <div class="col-auto text-center">
+            <input
+              type="checkbox"
+              v-model="selectedItems"
+              :value="item"
+              class="form-check-input"
+            />
+          </div>
+
+          <!-- Cột Ảnh sản phẩm và tên (điều hướng đến trang chi tiết sản phẩm) -->
+          <div class="col-6 d-flex align-items-center" @click="goToDetail(item.id)" style="cursor: pointer;">
+            <img
+              :src="item.image"
+              alt="product image"
+              class="img-fluid rounded shadow-sm me-3"
+              style="max-width: 100px; max-height: 100px;"
+            />
+            <div>
+              <h5 class="mb-1 text-primary">{{ item.name }}</h5>
+              <p class="text-muted mb-1">Mã SP: {{ item.code }}</p>
+              <p class="text-muted mb-0">{{ item.price.toLocaleString() }} VND</p>
             </div>
           </div>
-        </div>
-  
-        <!-- Tổng số lượng và tổng giá trị, và nút thanh toán được căn sang bên phải -->
-        <div class="mt-3 d-flex justify-content-end">
-          <div>
-            <h4>Tổng Số Lượng: {{ totalNum }} sản phẩm</h4>
-            <h4>Tổng Giá Trị: {{ totalPrice }} VND</h4>
+
+          <!-- Cột Điều chỉnh số lượng -->
+          <div class="col-2 text-center">
+            <div class="d-flex justify-content-center align-items-center">
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                @click="decreaseQuantity(item.id)"
+              >
+                -
+              </button>
+              <span class="mx-3">{{ item.quantity }}</span>
+              <button
+                class="btn btn-outline-secondary btn-sm"
+                @click="increaseQuantity(item.id)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- Cột Tổng tiền -->
+          <div class="col-2 text-center">
+            <strong class="text-success">
+              {{ (item.price * item.quantity).toLocaleString() }} VND
+            </strong>
+          </div>
+
+          <!-- Cột Xóa -->
+          <div class="col-auto text-center">
+            <button
+              class="btn btn-outline-danger btn-sm"
+              @click="removeFromCart(item.id)"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
           </div>
         </div>
-  
-        <div class="mt-3 d-flex justify-content-end">
-          <!-- Nút thanh toán -->
-          <button class="btn btn-success" @click="checkout">Thanh Toán</button>
+      </div>
+
+      <!-- Phần Tổng tiền -->
+      <div class="cart-summary mt-4 p-3 border rounded bg-light">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Tạm tính:</h5>
+          <h5 class="mb-0 text-primary">
+            {{ selectedTotalPrice.toLocaleString() }} VND
+          </h5>
+        </div>
+        <div class="text-end">
+          <button
+            class="btn btn-success px-4"
+            :disabled="selectedItems.length === 0"
+            @click="checkout"
+          >
+            Mua Ngay
+          </button>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
+
+
+
+
   
-  <script setup>
-  import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
-  
-  const cartStore = useCartStore(); // Khởi tạo store giỏ hàng
-  
-  const cartItems = computed(() => cartStore.items); // Lấy danh sách sản phẩm trong giỏ hàng
-  const totalNum = computed(() => cartStore.total_num); // Tổng số lượng sản phẩm
-  const totalPrice = computed(() => cartStore.total_price); // Tổng giá trị giỏ hàng
-  
-  // Xóa sản phẩm khỏi giỏ hàng
-  const removeFromCart = (productId) => {
-    cartStore.removeFromCart(productId); // Gọi hành động xóa sản phẩm khỏi giỏ hàng
-  };
-  
-  // Giảm số lượng sản phẩm
-  const decreaseQuantity = (productId) => {
-    cartStore.decreaseQuantity(productId); // Gọi hành động giảm số lượng
-  };
-  
-  // Tăng số lượng sản phẩm
-  const increaseQuantity = (productId) => {
-    cartStore.addToCart({ id: productId }); // Gọi hành động thêm sản phẩm vào giỏ hàng để tăng số lượng
-  };
-  
-  // Hàm thanh toán (có thể gửi dữ liệu giỏ hàng lên backend)
-  const checkout = async () => {
-    try {
-      const response = await $fetch("http://localhost:3001/api/checkout", {
-        method: "POST",
-        body: {
-          id_customer: cartStore.id_customer,
-          total_num: cartStore.total_num,
-          total_price: cartStore.total_price,
-          items: cartStore.items,
-        },
-      });
-      console.log("Thanh toán thành công", response);
-      cartStore.clearCart(); // Xóa giỏ hàng sau khi thanh toán thành công
-    } catch (error) {
-      console.error("Lỗi khi thanh toán:", error);
-    }
-  };
-  </script>
-  
-  <style scoped>
-  /* Căn chỉnh các nút trong cùng một dòng */
-  .d-flex.align-items-center {
-    display: flex;
-    align-items: center;
+<script setup>
+import { computed, ref, onMounted } from "vue";
+import { useRouter } from "vue-router"; // Import router để điều hướng
+import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
+import Swal from "sweetalert2"; // Import SweetAlert2
+
+const router = useRouter(); // Khởi tạo router
+const cartStore = useCartStore();
+
+const cartItems = computed(() => cartStore.items);
+const totalPrice = computed(() => cartStore.total_price);
+const selectedItems = ref([]); // Lưu trạng thái sản phẩm được chọn
+
+// Tính tổng giá trị của các sản phẩm đã chọn
+const selectedTotalPrice = computed(() =>
+  selectedItems.value.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  )
+);
+
+// Chuyển đến trang chi tiết sản phẩm
+const goToDetail = (productId) => {
+  router.push(`/product/${productId}`);
+};
+
+// Kiểm tra xem người dùng đã đăng nhập chưa
+const checkAuthentication = () => {
+  const user = localStorage.getItem("user"); // Lấy thông tin người dùng từ localStorage
+  if (!user) {
+    Swal.fire({
+      title: "Yêu cầu đăng nhập",
+      text: "Bạn cần đăng nhập để truy cập giỏ hàng.",
+      icon: "warning",
+      showCancelButton: false,
+      confirmButtonText: "OK",
+    }).then(() => {
+      router.push("/auth"); // Chuyển hướng đến trang đăng nhập
+    });
   }
-  
-  /* Tăng khoảng cách giữa các nút */
-  .mx-2 {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
+};
+
+const removeFromCart = (productId) => {
+  cartStore.removeFromCart(productId);
+};
+
+const decreaseQuantity = (productId) => {
+  cartStore.decreaseQuantity(productId);
+};
+
+const increaseQuantity = (productId) => {
+  cartStore.addToCart({ id: productId });
+};
+
+const checkout = async () => {
+  try {
+    const itemsToCheckout = selectedItems.value.map((item) => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+    }));
+    await $fetch("http://localhost:3001/api/checkout", {
+      method: "POST",
+      body: {
+        id_customer: cartStore.id_customer,
+        items: itemsToCheckout,
+        total_price: selectedTotalPrice.value,
+      },
+    });
+    cartStore.clearCart();
+    selectedItems.value = []; // Xóa trạng thái chọn
+  } catch (error) {
+    console.error("Lỗi khi thanh toán:", error);
   }
+};
+
+// Kiểm tra trạng thái đăng nhập khi component được tải
+onMounted(() => {
+  checkAuthentication();
+});
+</script>
+
+
+
+
+
   
-  /* Căn chỉnh các thông tin tổng và nút thanh toán sang bên phải */
-  .d-flex.justify-content-end {
-    justify-content: flex-end;
-  }
-  </style>
+<style scoped>
+
+.cart-list {
+  max-width: 100%;
+}
+
+.cart-item img {
+  border-radius: 8px;
+}
+
+.cart-item .btn-outline-secondary {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-summary {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+}
+
+.cart-summary h5 {
+  margin: 0;
+}
+
+.text-end button {
+  font-size: 16px;
+}
+
+.cart-item {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
+
