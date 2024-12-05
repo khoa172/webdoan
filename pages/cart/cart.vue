@@ -14,6 +14,7 @@
           class="cart-item row align-items-center mb-3 p-3 border rounded"
           v-for="item in cartItems"
           :key="item.id"
+          :class="{ 'selected-item': selectedItems.includes(item) }"
         >
           <!-- Cột Checkbox -->
           <div class="col-auto text-center">
@@ -26,7 +27,11 @@
           </div>
 
           <!-- Cột Ảnh sản phẩm và tên (điều hướng đến trang chi tiết sản phẩm) -->
-          <div class="col-6 d-flex align-items-center" @click="goToDetail(item.id)" style="cursor: pointer;">
+          <div
+            class="col-6 d-flex align-items-center product-info"
+            @click="goToDetail(item.id)"
+            style="cursor: pointer;"
+          >
             <img
               :src="item.image"
               alt="product image"
@@ -99,6 +104,7 @@
     </div>
   </div>
 </template>
+
 
 
 
@@ -194,20 +200,24 @@ onMounted(() => {
   
 <style scoped>
 
-.cart-list {
-  max-width: 100%;
+.cart-item {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.cart-item img {
-  border-radius: 8px;
+.cart-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cart-item .btn-outline-secondary {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cart-item.selected-item {
+  background-color: #eaf5ff;
+  border-color: #007bff;
+}
+
+.product-info:hover h5 {
+  color: #0056b3;
 }
 
 .cart-summary {
@@ -215,17 +225,9 @@ onMounted(() => {
   border: 1px solid #ddd;
 }
 
-.cart-summary h5 {
-  margin: 0;
-}
-
 .text-end button {
   font-size: 16px;
 }
 
-.cart-item {
-  background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
 </style>
 
