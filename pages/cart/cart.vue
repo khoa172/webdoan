@@ -92,13 +92,14 @@
           </h5>
         </div>
         <div class="text-end">
-          <button
+          <NuxtLink to="/checkout/checkout">
+            <button
             class="btn btn-success px-4"
             :disabled="selectedItems.length === 0"
-            @click="checkout"
-          >
+            @click="checkout">
             Mua Ngay
           </button>
+          </NuxtLink>
         </div>
       </div>
     </div>
