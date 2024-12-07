@@ -53,9 +53,11 @@
 
             <!-- Nút hành động -->
             <div class="d-flex gap-3">
-              <button class="btn btn-primary btn-lg flex-fill">
+              <NuxtLink to="/checkout/checkout">
+                <button class="btn btn-primary btn-lg flex-fill">
                 Mua Ngay
               </button>
+              </NuxtLink>
               <button
                 class="btn btn-outline-secondary btn-lg flex-fill"
                 @click="addToCart"
