@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "bootstrap-icons/font/bootstrap-icons.css"
   ],
 
+
   // Cấu hình build để Vuetify được biên dịch đúng
   build: {
     transpile: ['vuetify'], // Đảm bảo Vuetify được biên dịch
