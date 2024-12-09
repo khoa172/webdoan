@@ -126,7 +126,7 @@ const selectedItems = ref([]); // Lưu trạng thái sản phẩm được chọ
 
 // Tính tổng giá trị của các sản phẩm đã chọn
 const selectedTotalPrice = computed(() =>
-  cartItems.value.reduce(
+selectedItems.value.reduce(
     (total, item) => total + (item.price || 0) * (item.quantity || 0),
     0
   )
