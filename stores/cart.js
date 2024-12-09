@@ -92,13 +92,23 @@ export const useCartStore = defineStore('cart', {
      */
     loadCartFromLocalStorage() {
       const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        this.items = JSON.parse(savedCart).map((item) => ({
-          ...item,
-          image: item.image || `http://localhost:3001/uploads/${item.image}`, // Đảm bảo đường dẫn đầy đủ
-        }));
-        this.updateCartInfo();
+      try {
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            this.items = parsedCart.map((item) => ({
+              ...item,
+              image: item.image || `http://localhost:3001/uploads/${item.image}`, // Đảm bảo đường dẫn đầy đủ
+            }));
+            this.updateCartInfo();
+          } else {
+            console.error('Dữ liệu giỏ hàng trong localStorage không phải là mảng:', parsedCart);
+          }
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải giỏ hàng từ localStorage:', error);
       }
-    },
+    }
+    
   },
 });
