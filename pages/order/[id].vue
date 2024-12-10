@@ -1,57 +1,63 @@
 <template>
   <div class="container mt-5">
-    <div class="order-header text-center">
-      <h2>Chi Tiết Đơn Hàng</h2>
-    </div>
-    <div v-if="!order" class="alert alert-warning text-center mt-4">
-      <p>Không tìm thấy thông tin đơn hàng.</p>
-    </div>
-    <div v-else class="order-details mt-4">
-      <!-- Thông tin đơn hàng -->
-      <div class="order-info mb-4">
-        <h3 class="text-primary">Thông Tin Đơn Hàng</h3>
-        <p><strong>Mã Đơn Hàng:</strong> {{ order.code }}</p>
-        <p><strong>Ngày Tạo:</strong> {{ order.create_date }}</p>
-        <p><strong>Trạng Thái:</strong> <span :class="statusClass(order.status)">{{ order.status }}</span></p>
-        <p><strong>Ghi Chú:</strong> {{ order.note || 'Không có' }}</p>
+    <div class="card shadow-lg">
+      <div class="card-header bg-primary text-white text-center">
+        <h3>Chi Tiết Đơn Hàng</h3>
       </div>
-
-      <!-- Thông tin khách hàng -->
-      <div class="customer-info mb-4">
-        <h3 class="text-primary">Thông Tin Khách Hàng</h3>
-        <p><strong>Họ và Tên:</strong> {{ order.customer_name }}</p>
-        <p><strong>Số Điện Thoại:</strong> {{ order.customer_phone }}</p>
-        <p><strong>Email:</strong> {{ order.customer_email }}</p>
-        <p><strong>Địa Chỉ:</strong> {{ order.customer_address }}</p>
+      <div v-if="!order" class="card-body text-center text-muted">
+        <p class="fs-5">Không tìm thấy thông tin đơn hàng.</p>
       </div>
+      <div v-else class="card-body">
+        <!-- Thông tin đơn hàng -->
+        <div class="mb-4">
+          <h6 class="text-secondary fw-bold">Thông Tin Đơn Hàng</h6>
+          <hr />
+          <p class="mb-1"><strong>Mã Đơn Hàng:</strong> {{ order.code }}</p>
+          <p class="mb-1"><strong>Ngày Tạo:</strong> {{ order.create_date }}</p>
+          <p class="mb-1">
+            <strong>Trạng Thái:</strong>
+            <span :class="statusClass(order.status)">
+              {{ order.status }}
+            </span>
+          </p>
+        </div>
 
-      <!-- Danh sách sản phẩm -->
-      <div class="product-list mb-4">
-        <h3 class="text-primary">Danh Sách Sản Phẩm</h3>
-        <table class="table table-hover">
-          <thead class="table-dark">
-            <tr>
-              <th>Tên Sản Phẩm</th>
-              <th>Số Lượng</th>
-              <th>Đơn Giá</th>
-              <th>Tổng</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in order.items" :key="item.id">
-              <td>{{ item.name }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ formatPrice(item.price / item.quantity) }}</td>
-              <td>{{ formatPrice(item.price) }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3" class="text-end"><strong>Tổng Thanh Toán:</strong></td>
-              <td><strong>{{ formatPrice(order.total_price) }}</strong></td>
-            </tr>
-          </tfoot>
-        </table>
+        <!-- Danh sách sản phẩm -->
+        <div class="mb-4">
+          <h6 class="text-secondary fw-bold">Danh Sách Sản Phẩm</h6>
+          <hr />
+          <table class="table table-hover">
+            <thead class="table-dark">
+              <tr>
+                <th class="text-center">Tên Sản Phẩm</th>
+                <th class="text-center">Số Lượng</th>
+                <th class="text-center">Đơn Giá</th>
+                <th class="text-center">Tổng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in order.items" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-end">{{ formatPrice(item.price / item.quantity) }}</td>
+                <td class="text-end">{{ formatPrice(item.price) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="text-end fw-bold">Tổng Thanh Toán:</td>
+                <td class="text-end fw-bold">{{ formatPrice(order.total_price) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Nút quay lại -->
+        <div class="text-end">
+          <button class="btn btn-secondary" @click="goBack">
+            Quay Lại
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -59,15 +65,16 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const router = useRouter();
 const order = ref(null);
 
 const loadOrderDetails = async () => {
   const { id } = route.params;
   try {
-    const response = await fetch(`http://localhost:3001/api/orders/details/${id}`);
+    const response = await fetch(`http://localhost:3001/api/orders/${id}`);
     if (response.ok) {
       order.value = await response.json();
     } else {
@@ -76,6 +83,10 @@ const loadOrderDetails = async () => {
   } catch (error) {
     console.error(error.message);
   }
+};
+
+const goBack = () => {
+  router.back();
 };
 
 onMounted(() => {
@@ -92,11 +103,11 @@ const formatPrice = (price) => {
 const statusClass = (status) => {
   switch (status) {
     case "Thành công":
-      return "text-success";
+      return "text-success fw-bold";
     case "Chờ xác nhận":
-      return "text-warning";
+      return "text-warning fw-bold";
     case "Hủy":
-      return "text-danger";
+      return "text-danger fw-bold";
     default:
       return "text-muted";
   }
@@ -105,51 +116,35 @@ const statusClass = (status) => {
 
 <style scoped>
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   font-family: "Arial", sans-serif;
 }
 
-.order-header h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
+.card-header h3 {
+  font-size: 1.5rem;
+  margin: 0;
 }
 
-.order-info,
-.customer-info,
-.product-list {
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background: #f9f9f9;
+.card-body p {
+  font-size: 0.875rem; /* Làm nhỏ chữ thông tin */
+  margin-bottom: 0.5rem;
 }
 
 .table-hover tbody tr:hover {
-  background-color: #f1f1f1;
+  background-color: #f8f9fa;
 }
 
-.table-dark th {
-  background-color: #343a40;
-  color: #fff;
-}
-
-.text-primary {
-  color: #007bff;
-}
-
-.text-success {
-  color: #28a745;
-}
-
-.text-warning {
-  color: #ffc107;
-}
-
-.text-danger {
-  color: #dc3545;
+.text-secondary {
+  color: #6c757d;
 }
 
 .text-muted {
-  color: #6c757d;
+  color: #adb5bd;
+}
+
+button {
+  font-size: 0.875rem;
+  padding: 0.5rem 1.5rem;
 }
 </style>

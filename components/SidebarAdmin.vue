@@ -20,13 +20,14 @@
           Quản Lý Thương Hiệu và Danh Mục
         </nuxt-link>
       </li>
+      <li>
+        <nuxt-link to="/admin/order" class="nav-link" exact-active-class="active">
+          Quản Lý Đơn Hàng
+        </nuxt-link>
+      </li>
       </ul>
     </div>
   </template>
-  
-  <script setup>
-  // Không cần logic đặc biệt
-  </script>
   
   <style scoped>
   .active {

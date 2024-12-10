@@ -159,6 +159,20 @@ const proceedToCheckout = () => {
     });
   }
 };
+onMounted(() => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    Swal.fire({
+      title: "Bạn chưa đăng nhập",
+      text: "Hãy đăng nhập để tiếp tục.",
+      icon: "info",
+      confirmButtonText: "Đăng nhập",
+    }).then(() => {
+      router.push("/auth");
+    });
+  }
+});
+
 </script>
 
 <style scoped>

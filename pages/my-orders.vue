@@ -35,22 +35,29 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const orders = ref([]);
+const router = useRouter();
 
 const loadOrders = async () => {
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('userId'); // Lấy userId từ localStorage
   if (userId) {
     try {
-      const response = await fetch(`http://localhost:3001/api/orders/${userId}`);
+      const response = await fetch(`http://localhost:3001/api/orders/user/${userId}`);
       if (response.ok) {
         orders.value = await response.json();
+      } else if (response.status === 404) {
+        console.warn('Không có đơn hàng nào.');
+        orders.value = [];
       } else {
         throw new Error('Không thể tải danh sách đơn hàng');
       }
     } catch (error) {
-      console.error(error.message);
+      console.error('Lỗi:', error.message);
     }
+  } else {
+    router.push('/auth'); // Chuyển hướng đến trang đăng nhập nếu chưa đăng nhập
   }
 };
 

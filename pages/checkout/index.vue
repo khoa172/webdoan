@@ -234,6 +234,17 @@ const submitOrder = async () => {
 // Lấy dữ liệu từ query và thông tin người dùng
 onMounted(() => {
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  if (!token) {
+    Swal.fire({
+      title: "Bạn chưa đăng nhập",
+      text: "Hãy đăng nhập để tiếp tục.",
+      icon: "info",
+      confirmButtonText: "Đăng nhập",
+    }).then(() => {
+      router.push("/auth");
+    });
+  }
   if (!userId) {
     Swal.fire({
       title: "Yêu cầu đăng nhập",
