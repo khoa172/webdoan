@@ -138,3 +138,50 @@ exports.getOrderDetails = async (req, res) => {
     });
   }
 };
+
+// API Lấy tất cả đơn hàng cho quản trị viên
+exports.getAllOrders = async (req, res) => {
+  try {
+    const [orders] = await db.query(
+      `SELECT o.id, o.code, o.total_price, o.total_num_product, o.create_date, o.status, 
+       c.fullname AS customer_name
+       FROM db_order o
+       JOIN db_customer c ON o.custom_id = c.id
+       ORDER BY o.create_date DESC`
+    );
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách đơn hàng:", error);
+    res.status(500).json({ message: "Lỗi server khi lấy danh sách đơn hàng", error: error.message });
+  }
+};
+
+// API Xóa đơn hàng
+exports.deleteOrder = async (req, res) => {
+  const { orderId } = req.params;
+
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ message: "Thiếu thông tin orderId hợp lệ" });
+  }
+
+  const connection = await db.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // Xóa chi tiết đơn hàng
+    await connection.query("DELETE FROM db_detail_order WHERE id_order = ?", [orderId]);
+
+    // Xóa đơn hàng
+    await connection.query("DELETE FROM db_order WHERE id = ?", [orderId]);
+
+    await connection.commit();
+    res.status(200).json({ message: "Đơn hàng đã được xóa thành công" });
+  } catch (error) {
+    await connection.rollback();
+    console.error("Lỗi khi xóa đơn hàng:", error);
+    res.status(500).json({ message: "Lỗi server khi xóa đơn hàng", error: error.message });
+  } finally {
+    connection.release();
+  }
+};
