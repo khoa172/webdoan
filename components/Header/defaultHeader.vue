@@ -10,6 +10,10 @@
                   <i class="fa fa-user"></i>
                   <NuxtLink to="/my-account">My Account</NuxtLink>
                 </li>
+                <li v-if="isLoggedIn">
+                  <i class="fa fa-list"></i>
+                  <NuxtLink to="/my-orders">My Orders</NuxtLink>
+                </li>
                 <li v-if="isLoggedIn && isAdmin">
                   <i class="fa fa-cogs"></i>
                   <NuxtLink to="/admin">Quản Lý</NuxtLink>
@@ -43,16 +47,17 @@
           <!-- Phần shopping item -->
           <div class="col-sm-6">
             <NuxtLink to="/cart/cart">
-            <div class="shopping-item fa fa-shopping-cart">
-                    <span class="product-count">{{ cart.total_num }}</span>
-            </div>
-          </NuxtLink>
+              <div class="shopping-item fa fa-shopping-cart">
+                <span class="product-count">{{ cart.total_num }}</span>
+              </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 
 
@@ -71,14 +76,13 @@ const router = useRouter();
 onMounted(() => {
   const token = localStorage.getItem('token');
   const userData = localStorage.getItem('user');
-  cart.loadCartFromLocalStorage(); // Thêm dòng này để tải giỏ hàng từ localStorage
+  cart.loadCartFromLocalStorage(); // Tải giỏ hàng từ localStorage
 
   if (token && userData) {
     isLoggedIn.value = true;
     user.value = JSON.parse(userData);
     isAdmin.value = user.value.role === 'admin'; 
   }
-  cart.initializeCustomer(); // Initialize customer info from localStorage when component is mounted
 });
 
 const logout = () => {
@@ -90,8 +94,8 @@ const logout = () => {
   cart.clearCart(); // Xóa giỏ hàng trong store
   router.push('/auth');
 };
-  
 </script>
+
 
 
 <style scoped>

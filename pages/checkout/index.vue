@@ -2,135 +2,141 @@
   <div class="container mt-5">
     <h2 class="text-center mb-4">Thông tin thanh toán</h2>
 
-    <!-- Thông tin sản phẩm -->
-    <div class="product-summary mb-4">
-      <h4 class="mb-3">Thông tin sản phẩm</h4>
-      <table class="table table-bordered text-center align-middle">
-        <thead>
-          <tr>
-            <th>Hình ảnh</th>
-            <th>Tên sản phẩm</th>
-            <th>Giá</th>
-            <th>Số lượng</th>
-            <th>Tạm tính</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in selectedItems" :key="item.id">
-            <td>
-              <img
-                :src="item.image"
-                alt="Product Image"
-                class="img-thumbnail"
-                style="max-width: 80px; max-height: 80px;"
-              />
-            </td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.price.toLocaleString() }} VND</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ (item.price * item.quantity).toLocaleString() }} VND</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Thông báo yêu cầu đăng nhập -->
+    <div v-if="!customer.id" class="alert alert-warning">
+      Bạn cần <a href="/login" class="alert-link">đăng nhập</a> trước khi đặt hàng.
     </div>
 
-    <hr class="my-5" />
+    <div v-else>
+      <!-- Thông tin sản phẩm -->
+      <div class="product-summary mb-4">
+        <h4 class="mb-3">Thông tin sản phẩm</h4>
+        <table class="table table-bordered text-center align-middle">
+          <thead>
+            <tr>
+              <th>Hình ảnh</th>
+              <th>Tên sản phẩm</th>
+              <th>Giá</th>
+              <th>Số lượng</th>
+              <th>Tạm tính</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in selectedItems" :key="item.id">
+              <td>
+                <img
+                  :src="item.image"
+                  alt="Product Image"
+                  class="img-thumbnail"
+                  style="max-width: 80px; max-height: 80px;"
+                />
+              </td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.price.toLocaleString() }} VND</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ (item.price * item.quantity).toLocaleString() }} VND</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <!-- Thông tin khách hàng -->
-    <div class="customer-info mb-4">
-      <h4 class="mb-3">Thông tin khách hàng</h4>
-      <form @submit.prevent="submitOrder">
-        <div class="mb-3">
-          <label for="customerName" class="form-label">Họ và tên</label>
-          <input
-            type="text"
-            id="customerName"
-            v-model="customer.name"
-            class="form-control"
-            required
-            :class="{'is-invalid': !customer.name && formSubmitted}"
-          />
-          <div v-if="!customer.name && formSubmitted" class="invalid-feedback">
-            Vui lòng nhập họ và tên.
+      <!-- Thông tin khách hàng -->
+      <div class="customer-info mb-4">
+        <h4 class="mb-3">Thông tin khách hàng</h4>
+        <form @submit.prevent="submitOrder">
+          <div class="mb-3">
+            <label for="customerName" class="form-label">Họ và tên</label>
+            <input
+              type="text"
+              id="customerName"
+              v-model="customer.name"
+              class="form-control"
+              required
+              :class="{'is-invalid': !customer.name && formSubmitted}"
+            />
+            <div v-if="!customer.name && formSubmitted" class="invalid-feedback">
+              Vui lòng nhập họ và tên.
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label for="customerPhone" class="form-label">Số điện thoại</label>
-          <input
-            type="text"
-            id="customerPhone"
-            v-model="customer.phone"
-            class="form-control"
-            required
-            :class="{'is-invalid': phoneError && formSubmitted}"
-            @blur="validatePhone"
-          />
-          <div v-if="phoneError && formSubmitted" class="invalid-feedback">
-            Số điện thoại phải có 10 chữ số và không chứa chữ cái.
+          <div class="mb-3">
+            <label for="customerPhone" class="form-label">Số điện thoại</label>
+            <input
+              type="text"
+              id="customerPhone"
+              v-model="customer.phone"
+              class="form-control"
+              required
+              :class="{'is-invalid': phoneError && formSubmitted}"
+              @blur="validatePhone"
+            />
+            <div v-if="phoneError && formSubmitted" class="invalid-feedback">
+              Số điện thoại phải có 10 chữ số và không chứa chữ cái.
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label for="customerEmail" class="form-label">Email</label>
-          <input
-            type="email"
-            id="customerEmail"
-            v-model="customer.email"
-            class="form-control"
-            required
-            :class="{'is-invalid': emailError && formSubmitted}"
-            @blur="validateEmail"
-          />
-          <div v-if="emailError && formSubmitted" class="invalid-feedback">
-            Email không hợp lệ.
+          <div class="mb-3">
+            <label for="customerEmail" class="form-label">Email</label>
+            <input
+              type="email"
+              id="customerEmail"
+              v-model="customer.email"
+              class="form-control"
+              required
+              :class="{'is-invalid': emailError && formSubmitted}"
+              @blur="validateEmail"
+            />
+            <div v-if="emailError && formSubmitted" class="invalid-feedback">
+              Email không hợp lệ.
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label for="customerAddress" class="form-label">Địa chỉ chi tiết</label>
-          <textarea
-            id="customerAddress"
-            v-model="customer.address"
-            class="form-control"
-            required
-            :class="{'is-invalid': !customer.address && formSubmitted}"
-          ></textarea>
-          <div v-if="!customer.address && formSubmitted" class="invalid-feedback">
-            Vui lòng nhập địa chỉ chi tiết.
+          <div class="mb-3">
+            <label for="customerAddress" class="form-label">Địa chỉ chi tiết</label>
+            <textarea
+              id="customerAddress"
+              v-model="customer.address"
+              class="form-control"
+              required
+              :class="{'is-invalid': !customer.address && formSubmitted}"
+            ></textarea>
+            <div v-if="!customer.address && formSubmitted" class="invalid-feedback">
+              Vui lòng nhập địa chỉ chi tiết.
+            </div>
           </div>
-        </div>
-        <div class="mb-3">
-          <label for="customerNote" class="form-label">Ghi chú</label>
-          <textarea
-            id="customerNote"
-            v-model="customer.note"
-            class="form-control"
-          ></textarea>
-        </div>
+          <div class="mb-3">
+            <label for="customerNote" class="form-label">Ghi chú</label>
+            <textarea
+              id="customerNote"
+              v-model="customer.note"
+              class="form-control"
+            ></textarea>
+          </div>
 
-        <!-- Phần xác nhận -->
-        <div class="d-flex justify-content-between align-items-center mt-4">
-          <strong class="text-primary fs-5">
-            Tổng tiền: {{ totalPrice.toLocaleString() }} VND
-          </strong>
-          <button class="btn btn-success px-5" :disabled="formInvalid">
-            Xác nhận
-          </button>
-        </div>
-      </form>
+          <!-- Phần xác nhận -->
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <strong class="text-primary fs-5">
+              Tổng tiền: {{ totalPrice.toLocaleString() }} VND
+            </strong>
+            <button class="btn btn-success px-5" :disabled="formInvalid">
+              Xác nhận
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
 
-// Lấy dữ liệu từ router
 const route = useRoute();
+const router = useRouter();
 const selectedItems = ref([]);
 
 // Thông tin khách hàng
 const customer = ref({
+  id: null, // Thêm id nếu khách đã đăng nhập
   name: "",
   phone: "",
   email: "",
@@ -178,28 +184,76 @@ const formInvalid = computed(() => {
 // Gửi đơn hàng
 const submitOrder = async () => {
   try {
+    if (!customer.value.id) {
+      Swal.fire("Lỗi!", "Bạn cần đăng nhập trước khi đặt hàng.", "error");
+      return;
+    }
+
     const order = {
-      customer: customer.value,
-      items: selectedItems.value,
+      customer: {
+        id: customer.value.id,
+        name: customer.value.name,
+        phone: customer.value.phone,
+        email: customer.value.email,
+        address: customer.value.address,
+        note: customer.value.note,
+      },
+      items: selectedItems.value.map((item) => ({
+        id: item.id,
+        price: item.price,
+        quantity: item.quantity,
+      })),
       totalPrice: totalPrice.value,
     };
 
-    await fetch("http://localhost:3001/api/order", {
+    const response = await fetch("http://localhost:3001/api/orders", {
       method: "POST",
-      body: JSON.stringify(order),
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(order),
     });
 
-    Swal.fire("Thành công!", "Đơn hàng của bạn đã được lưu.", "success");
+    if (!response.ok) {
+      throw new Error("Lỗi khi gửi đơn hàng");
+    }
+
+    const data = await response.json();
+
+    localStorage.removeItem("cart"); // Xóa giỏ hàng từ localStorage
+    selectedItems.value = []; // Xóa dữ liệu giỏ hàng trong component
+
+    Swal.fire("Thành công!", `Đơn hàng đã được lưu với mã: ${data.orderId}`, "success");
+    router.push("/my-orders"); // Điều hướng tới trang danh sách đơn hàng
   } catch (error) {
+    console.error("Lỗi khi gửi đơn hàng:", error);
     Swal.fire("Lỗi!", "Đã xảy ra lỗi khi lưu đơn hàng.", "error");
   }
 };
 
-// Lấy dữ liệu từ query
+// Lấy dữ liệu từ query và thông tin người dùng
 onMounted(() => {
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    Swal.fire({
+      title: "Yêu cầu đăng nhập",
+      text: "Bạn cần đăng nhập để tiếp tục thanh toán.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Đăng nhập",
+      cancelButtonText: "Hủy",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push("/login");
+      } else {
+        router.push("/cart");
+      }
+    });
+    return;
+  }
+
+  customer.value.id = parseInt(userId, 10);
+
   const itemsQuery = route.query.items;
   if (itemsQuery) {
     try {

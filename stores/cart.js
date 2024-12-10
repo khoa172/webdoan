@@ -1,37 +1,44 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useCartStore = defineStore('cart', {
+export const useCartStore = defineStore("cart", {
   state: () => ({
     id_customer: null, // ID khách hàng
-    total_num: 0, // Tổng số lượng sản phẩm trong giỏ hàng
+    total_num: 0, // Tổng số lượng sản phẩm
     total_price: 0, // Tổng giá trị giỏ hàng
-    items: [], // Mảng sản phẩm trong giỏ hàng
+    items: [], // Danh sách sản phẩm trong giỏ hàng
   }),
+
   actions: {
     /**
-     * Lấy thông tin khách hàng từ localStorage khi giỏ hàng được khởi tạo
+     * Khởi tạo thông tin khách hàng từ localStorage.
      */
     initializeCustomer() {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        const user = JSON.parse(userData);
-        this.id_customer = user.id; // Lưu id_customer từ dữ liệu người dùng
+      try {
+        const userData = localStorage.getItem("user");
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.id) this.id_customer = user.id;
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải thông tin khách hàng:", error);
       }
     },
 
     /**
-     * Thêm sản phẩm vào giỏ hàng
-     * @param {Object} product - Sản phẩm được thêm
+     * Thêm sản phẩm vào giỏ hàng.
+     * @param {Object} product - Sản phẩm cần thêm.
      */
     addToCart(product) {
       const existingItem = this.items.find((item) => item.id === product.id);
       if (existingItem) {
-        existingItem.quantity += 1; // Nếu sản phẩm đã tồn tại, tăng số lượng
+        existingItem.quantity += 1;
       } else {
         this.items.push({
           ...product,
           quantity: 1,
-          image: `http://localhost:3001/uploads/${product.image || product.images[0]}`, // Lấy đường dẫn đầy đủ
+          image: product.image
+            ? `http://localhost:3001/uploads/${product.image}`
+            : `http://localhost:3001/uploads/${product.images?.[0] || "default.jpg"}`,
         });
       }
       this.updateCartInfo();
@@ -39,40 +46,32 @@ export const useCartStore = defineStore('cart', {
     },
 
     /**
-     * Giảm số lượng sản phẩm trong giỏ hàng
-     * @param {Number} productId - ID sản phẩm
+     * Giảm số lượng sản phẩm.
+     * @param {Number} productId - ID sản phẩm.
      */
     decreaseQuantity(productId) {
       const item = this.items.find((item) => item.id === productId);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1; // Giảm số lượng sản phẩm
+      if (item) {
+        item.quantity > 1
+          ? (item.quantity -= 1)
+          : this.removeFromCart(productId);
         this.updateCartInfo();
         this.saveCartToLocalStorage();
-      } else {
-        this.removeFromCart(productId); // Nếu số lượng là 1, xóa sản phẩm khỏi giỏ hàng
       }
     },
 
     /**
-     * Xóa sản phẩm khỏi giỏ hàng
-     * @param {Number} productId - ID sản phẩm
+     * Xóa sản phẩm khỏi giỏ hàng.
+     * @param {Number} productId - ID sản phẩm.
      */
     removeFromCart(productId) {
-      this.items = this.items.filter((item) => item.id !== productId); // Lọc bỏ sản phẩm khỏi giỏ hàng
+      this.items = this.items.filter((item) => item.id !== productId);
       this.updateCartInfo();
-      this.saveCartToLocalStorage(); // Lưu lại giỏ hàng sau khi thay đổi
+      this.saveCartToLocalStorage();
     },
 
     /**
-     * Cập nhật thông tin tổng số lượng và giá trị giỏ hàng
-     */
-    updateCartInfo() {
-      this.total_num = this.items.reduce((total, item) => total + item.quantity, 0);
-      this.total_price = this.items.reduce((total, item) => total + item.price * item.quantity, 0);
-    },
-
-    /**
-     * Xóa toàn bộ giỏ hàng
+     * Xóa toàn bộ giỏ hàng.
      */
     clearCart() {
       this.items = [];
@@ -81,34 +80,41 @@ export const useCartStore = defineStore('cart', {
     },
 
     /**
-     * Lưu giỏ hàng vào localStorage
+     * Cập nhật thông tin tổng số lượng và giá trị.
      */
-    saveCartToLocalStorage() {
-      localStorage.setItem('cart', JSON.stringify(this.items));
+    updateCartInfo() {
+      this.total_num = this.items.reduce((total, item) => total + item.quantity, 0);
+      this.total_price = this.items.reduce((total, item) => total + item.price * item.quantity, 0);
     },
 
     /**
-     * Tải giỏ hàng từ localStorage khi trang được tải lại
+     * Lưu trạng thái giỏ hàng vào localStorage.
+     */
+    saveCartToLocalStorage() {
+      localStorage.setItem("cart", JSON.stringify(this.items));
+    },
+
+    /**
+     * Tải trạng thái giỏ hàng từ localStorage.
      */
     loadCartFromLocalStorage() {
-      const savedCart = localStorage.getItem('cart');
       try {
+        const savedCart = localStorage.getItem("cart");
         if (savedCart) {
           const parsedCart = JSON.parse(savedCart);
           if (Array.isArray(parsedCart)) {
             this.items = parsedCart.map((item) => ({
               ...item,
-              image: item.image || `http://localhost:3001/uploads/${item.image}`, // Đảm bảo đường dẫn đầy đủ
+              image: item.image || `http://localhost:3001/uploads/${item.image || "default.jpg"}`,
             }));
             this.updateCartInfo();
           } else {
-            console.error('Dữ liệu giỏ hàng trong localStorage không phải là mảng:', parsedCart);
+            console.error("Dữ liệu giỏ hàng không hợp lệ:", parsedCart);
           }
         }
       } catch (error) {
-        console.error('Lỗi khi tải giỏ hàng từ localStorage:', error);
+        console.error("Lỗi khi tải giỏ hàng:", error);
       }
-    }
-    
+    },
   },
 });
