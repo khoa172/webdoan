@@ -6,6 +6,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const productRoutes = require('./routes/productRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const orderRoutes = require('./routes/orderRoutes'); // Import order routes
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/products', productRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/orders', orderRoutes); // Thêm route đơn hàng
 
 // Khởi động server
 const PORT = 3001;
