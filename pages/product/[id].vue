@@ -53,11 +53,12 @@
 
             <!-- Nút hành động -->
             <div class="d-flex gap-3">
-              <NuxtLink to="/checkout/checkout">
-                <button class="btn btn-primary btn-lg flex-fill">
+              <button
+                class="btn btn-primary btn-lg flex-fill"
+                @click="buyNow"
+              >
                 Mua Ngay
               </button>
-              </NuxtLink>
               <button
                 class="btn btn-outline-secondary btn-lg flex-fill"
                 @click="addToCart"
@@ -84,12 +85,13 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
 import Swal from "sweetalert2";
 
 const cartStore = useCartStore(); // Khởi tạo store giỏ hàng
 const route = useRoute();
+const router = useRouter();
 const product = ref(null);
 
 // Lấy chi tiết sản phẩm từ API
@@ -116,6 +118,26 @@ const addToCart = () => {
       text: `${product.value.name} đã được thêm vào giỏ hàng của bạn.`,
       showConfirmButton: false,
       timer: 2000,
+    });
+  }
+};
+
+// Mua ngay và chuyển đến trang checkout
+const buyNow = () => {
+  if (product.value) {
+    router.push({
+      name: "checkout", // Route tới trang checkout
+      query: {
+        items: JSON.stringify([
+          {
+            id: product.value.id,
+            name: product.value.name,
+            price: product.value.price,
+            quantity: 1,
+            image: `http://localhost:3001/uploads/${product.value.images[0]}`,
+          },
+        ]),
+      },
     });
   }
 };
