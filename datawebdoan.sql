@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th12 10, 2024 lúc 08:51 AM
+-- Thời gian đã tạo: Th12 11, 2024 lúc 05:35 AM
 -- Phiên bản máy phục vụ: 8.3.0
 -- Phiên bản PHP: 8.2.18
 
@@ -150,7 +150,20 @@ CREATE TABLE IF NOT EXISTS `db_detail_order` (
   PRIMARY KEY (`id`),
   KEY `id_product` (`id_product`),
   KEY `id_order` (`id_order`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `db_detail_order`
+--
+
+INSERT INTO `db_detail_order` (`id`, `id_order`, `id_product`, `qty`, `sub_total_price`) VALUES
+(2, 2, 8, 1, 16590000),
+(3, 2, 9, 1, 33690000),
+(4, 3, 8, 1, 16590000),
+(5, 3, 9, 1, 33690000),
+(6, 3, 10, 1, 9690000),
+(7, 5, 8, 1, 16590000),
+(8, 5, 11, 1, 24990000);
 
 -- --------------------------------------------------------
 
@@ -162,6 +175,10 @@ DROP TABLE IF EXISTS `db_order`;
 CREATE TABLE IF NOT EXISTS `db_order` (
   `id` int NOT NULL AUTO_INCREMENT,
   `custom_id` int NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_phone` varchar(15) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `customer_address` text NOT NULL,
   `total_price` float NOT NULL,
   `total_num_product` int NOT NULL,
   `create_date` varchar(255) NOT NULL,
@@ -173,7 +190,16 @@ CREATE TABLE IF NOT EXISTS `db_order` (
   `date_confirm` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `db_order_ibfk_1` (`custom_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `db_order`
+--
+
+INSERT INTO `db_order` (`id`, `custom_id`, `customer_name`, `customer_phone`, `customer_email`, `customer_address`, `total_price`, `total_num_product`, `create_date`, `note`, `payment_method`, `status`, `time`, `code`, `date_confirm`) VALUES
+(2, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'dddd', 50280000, 2, '2024-12-10 18:02:15', 'sdasd', 'COD', 'Chờ xác nhận', '2024-12-10 18:02:15', 'ORD-1733828535936', '2024-12-10 18:02:15'),
+(3, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'ggggg', 59970000, 3, '2024-12-10 18:12:49', '', 'COD', 'Chờ xác nhận', '2024-12-10 18:12:49', 'ORD-1733829169223', '2024-12-10 18:12:49'),
+(5, 23, 'khoanguyen12344545', '3321030123', 'HJ@gmail.com', 'tphcm', 41580000, 2, '2024-12-10 19:15:38', '1245677sdfsfsfsfdsfdsf', 'COD', 'Chờ xác nhận', '2024-12-10 19:15:38', 'ORD-1733832938784', '2024-12-10 19:15:38');
 
 -- --------------------------------------------------------
 
