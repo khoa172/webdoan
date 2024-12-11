@@ -6,7 +6,7 @@
         <div class="col-md-6">
           <div class="p-4 text-center">
             <img
-              :src="`http://localhost:3001/uploads/${product.images[0]}`"
+              :src="product.images && product.images[0] ? `http://localhost:3001/uploads/${product.images[0]}` : '/path/to/default-image.jpg'"
               class="img-fluid rounded"
               alt="Product Image"
               style="max-height: 400px; object-fit: cover;"
@@ -53,11 +53,9 @@
 
             <!-- Nút hành động -->
             <div class="d-flex gap-3">
-              <NuxtLink to="/checkout">
-                <button class="btn btn-primary btn-lg flex-fill">
+              <button class="btn btn-primary btn-lg flex-fill" @click="buyNow">
                 Mua Ngay
               </button>
-              </NuxtLink>
               <button
                 class="btn btn-outline-secondary btn-lg flex-fill"
                 @click="addToCart"
@@ -84,12 +82,13 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
+import { useRoute, useRouter } from "vue-router";
+import { useCartStore } from "@/stores/cart";
 import Swal from "sweetalert2";
 
-const cartStore = useCartStore(); // Khởi tạo store giỏ hàng
+const cartStore = useCartStore();
 const route = useRoute();
+const router = useRouter();
 const product = ref(null);
 
 // Lấy chi tiết sản phẩm từ API
@@ -99,17 +98,37 @@ const fetchProductDetails = async () => {
     const response = await $fetch(`http://localhost:3001/api/products/${productId}`);
     product.value = {
       ...response,
-      images: JSON.parse(response.images || "[]"), // Giải mã danh sách hình ảnh
+      images: response.images ? JSON.parse(response.images) : [], // Xử lý mảng hình ảnh
     };
   } catch (error) {
     console.error("Lỗi khi tải chi tiết sản phẩm:", error);
   }
 };
 
-// Thêm sản phẩm vào giỏ hàng
+// Mua ngay
+const buyNow = () => {
+  if (product.value) {
+    router.push({
+      name: "checkout",
+      query: {
+        items: JSON.stringify([
+          {
+            id: product.value.id,
+            name: product.value.name,
+            price: product.value.price,
+            quantity: 1,
+            image: product.value.images && product.value.images[0] ? `http://localhost:3001/uploads/${product.value.images[0]}` : "/path/to/default-image.jpg",
+          },
+        ]),
+      },
+    });
+  }
+};
+
+// Thêm vào giỏ hàng
 const addToCart = () => {
   if (product.value) {
-    cartStore.addToCart(product.value); // Gọi hành động addToCart trong store
+    cartStore.addToCart(product.value);
     Swal.fire({
       icon: "success",
       title: "Đã thêm vào giỏ hàng!",
@@ -141,7 +160,7 @@ onMounted(fetchProductDetails);
 }
 
 .card-title {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .card-subtitle {
