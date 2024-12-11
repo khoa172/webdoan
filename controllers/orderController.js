@@ -4,7 +4,7 @@ const db = require("../db");
 exports.createOrder = async (req, res) => {
   console.log("Dữ liệu nhận từ frontend:", req.body);
 
-  const { customer, items, totalPrice } = req.body;
+  const { customer, items, totalPrice, paymentMethod } = req.body;
 
   // Kiểm tra dữ liệu đầu vào
   if (
@@ -15,61 +15,53 @@ exports.createOrder = async (req, res) => {
     !customer.address ||
     !Array.isArray(items) ||
     items.length === 0 ||
-    typeof totalPrice !== "number"
+    typeof totalPrice !== "number" ||
+    !paymentMethod
   ) {
     console.error("Dữ liệu không hợp lệ:", req.body);
     return res.status(400).json({ message: "Dữ liệu không hợp lệ", body: req.body });
   }
 
-  const connection = await db.getConnection(); // Tạo kết nối database
+  const connection = await db.getConnection();
   try {
-    await connection.beginTransaction(); // Bắt đầu transaction
+    await connection.beginTransaction();
 
-    // 1. Tạo đơn hàng trong bảng `db_order`
+    // Lưu đơn hàng
     const [orderResult] = await connection.query(
       `INSERT INTO db_order 
        (custom_id, customer_name, customer_phone, customer_email, customer_address, total_price, total_num_product, create_date, note, payment_method, status, time, code, date_confirm) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, 'COD', 'Chờ xác nhận', NOW(), ?, NOW())`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, 'Chờ xác nhận', NOW(), ?, NOW())`,
       [
         customer.id || null,
         customer.name,
         customer.phone,
         customer.email,
-        customer.address,
+        customer.address, // Lưu địa chỉ trực tiếp từ frontend
         totalPrice,
         items.length,
         customer.note || "",
-        `ORD-${Date.now()}` // Tạo mã đơn hàng duy nhất
+        paymentMethod,
+        `ORD-${Date.now()}`,
       ]
     );
 
     const orderId = orderResult.insertId;
 
-    // 2. Thêm chi tiết sản phẩm vào bảng `db_detail_order`
-    const detailData = items.map((item) => [
-      orderId,
-      item.id,
-      item.quantity,
-      item.price * item.quantity,
-    ]);
-
+    // Lưu chi tiết đơn hàng
+    const detailData = items.map((item) => [orderId, item.id, item.quantity, item.price * item.quantity]);
     await connection.query(
       "INSERT INTO db_detail_order (id_order, id_product, qty, sub_total_price) VALUES ?",
       [detailData]
     );
 
-    await connection.commit(); // Commit transaction
-
-    res.status(201).json({
-      message: "Đơn hàng đã được tạo thành công",
-      orderId,
-    });
+    await connection.commit();
+    res.status(201).json({ message: "Đơn hàng đã được tạo thành công", orderId });
   } catch (error) {
-    await connection.rollback(); // Rollback nếu có lỗi
+    await connection.rollback();
     console.error("Lỗi khi tạo đơn hàng:", error);
     res.status(500).json({ message: "Đã xảy ra lỗi khi tạo đơn hàng", error: error.message });
   } finally {
-    connection.release(); // Giải phóng kết nối
+    connection.release();
   }
 };
 
@@ -95,10 +87,7 @@ exports.getUserOrders = async (req, res) => {
     res.status(200).json(orders);
   } catch (error) {
     console.error("Lỗi khi lấy danh sách đơn hàng:", error);
-    res.status(500).json({
-      message: "Lỗi server khi lấy danh sách đơn hàng",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy danh sách đơn hàng", error: error.message });
   }
 };
 
@@ -112,8 +101,21 @@ exports.getOrderDetails = async (req, res) => {
 
   try {
     const [order] = await db.query(
-      `SELECT id, code, total_price, total_num_product, create_date, status, note, customer_name, customer_phone, customer_email, customer_address 
-       FROM db_order WHERE id = ?`,
+      `SELECT 
+         o.id, 
+         o.code, 
+         o.total_price, 
+         o.total_num_product, 
+         o.create_date, 
+         o.status, 
+         o.note, 
+         o.payment_method, 
+         o.customer_address, -- Lấy địa chỉ từ trường lưu trực tiếp
+         o.customer_name, 
+         o.customer_phone, 
+         o.customer_email 
+       FROM db_order o
+       WHERE o.id = ?`,
       [orderId]
     );
 
@@ -132,10 +134,7 @@ exports.getOrderDetails = async (req, res) => {
     res.status(200).json({ ...order[0], items: orderItems });
   } catch (error) {
     console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
-    res.status(500).json({
-      message: "Lỗi server khi lấy chi tiết đơn hàng",
-      error: error.message,
-    });
+    res.status(500).json({ message: "Lỗi server khi lấy chi tiết đơn hàng", error: error.message });
   }
 };
 
