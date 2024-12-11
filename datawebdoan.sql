@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th12 11, 2024 lúc 05:35 AM
+-- Thời gian đã tạo: Th12 11, 2024 lúc 10:44 AM
 -- Phiên bản máy phục vụ: 8.3.0
 -- Phiên bản PHP: 8.2.18
 
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS `db_detail_order` (
   PRIMARY KEY (`id`),
   KEY `id_product` (`id_product`),
   KEY `id_order` (`id_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_detail_order`
@@ -163,7 +163,11 @@ INSERT INTO `db_detail_order` (`id`, `id_order`, `id_product`, `qty`, `sub_total
 (5, 3, 9, 1, 33690000),
 (6, 3, 10, 1, 9690000),
 (7, 5, 8, 1, 16590000),
-(8, 5, 11, 1, 24990000);
+(8, 5, 11, 1, 24990000),
+(9, 6, 8, 1, 16590000),
+(10, 6, 9, 1, 33690000),
+(11, 7, 9, 1, 33690000),
+(12, 8, 8, 1, 16590000);
 
 -- --------------------------------------------------------
 
@@ -190,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `db_order` (
   `date_confirm` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `db_order_ibfk_1` (`custom_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_order`
@@ -199,7 +203,10 @@ CREATE TABLE IF NOT EXISTS `db_order` (
 INSERT INTO `db_order` (`id`, `custom_id`, `customer_name`, `customer_phone`, `customer_email`, `customer_address`, `total_price`, `total_num_product`, `create_date`, `note`, `payment_method`, `status`, `time`, `code`, `date_confirm`) VALUES
 (2, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'dddd', 50280000, 2, '2024-12-10 18:02:15', 'sdasd', 'COD', 'Chờ xác nhận', '2024-12-10 18:02:15', 'ORD-1733828535936', '2024-12-10 18:02:15'),
 (3, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'ggggg', 59970000, 3, '2024-12-10 18:12:49', '', 'COD', 'Chờ xác nhận', '2024-12-10 18:12:49', 'ORD-1733829169223', '2024-12-10 18:12:49'),
-(5, 23, 'khoanguyen12344545', '3321030123', 'HJ@gmail.com', 'tphcm', 41580000, 2, '2024-12-10 19:15:38', '1245677sdfsfsfsfdsfdsf', 'COD', 'Chờ xác nhận', '2024-12-10 19:15:38', 'ORD-1733832938784', '2024-12-10 19:15:38');
+(5, 23, 'khoanguyen12344545', '3321030123', 'HJ@gmail.com', 'tphcm', 41580000, 2, '2024-12-10 19:15:38', '1245677sdfsfsfsfdsfdsf', 'COD', 'Chờ xác nhận', '2024-12-10 19:15:38', 'ORD-1733832938784', '2024-12-10 19:15:38'),
+(6, 23, 'khoanguyendd', '3321030123', 'HJdd@gmail.com', 'wwwwww, Phường 04, Quận 8, Thành phố Hồ Chí Minh', 50280000, 2, '2024-12-11 16:23:46', '', 'COD', 'Chờ xác nhận', '2024-12-11 16:23:46', 'ORD-1733909026457', '2024-12-11 16:23:46'),
+(7, 23, 'khoanguyen2', '1234567890', 'q@gmail.com', '12d, Xã Bắc Sơn, Huyện Sóc Sơn, Thành phố Hà Nội', 33690000, 1, '2024-12-11 16:37:31', 'hi', 'Direct', 'Chờ xác nhận', '2024-12-11 16:37:31', 'ORD-1733909851555', '2024-12-11 16:37:31'),
+(8, 23, 'khoanguyen88888', '0706718920', 'HJdddddd@gmail.com', 'dddasda343, Xã Mường Chiên, Huyện Quỳnh Nhai, Tỉnh Sơn La', 16590000, 1, '2024-12-11 16:56:50', 'dddadas', 'Direct', 'Chờ xác nhận', '2024-12-11 16:56:50', 'ORD-1733911010618', '2024-12-11 16:56:50');
 
 -- --------------------------------------------------------
 
