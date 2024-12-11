@@ -52,11 +52,7 @@
               v-model="customer.name"
               class="form-control"
               required
-              :class="{'is-invalid': !customer.name && formSubmitted}"
             />
-            <div v-if="!customer.name && formSubmitted" class="invalid-feedback">
-              Vui lòng nhập họ và tên.
-            </div>
           </div>
           <div class="mb-3">
             <label for="customerPhone" class="form-label">Số điện thoại</label>
@@ -66,12 +62,8 @@
               v-model="customer.phone"
               class="form-control"
               required
-              :class="{'is-invalid': phoneError && formSubmitted}"
               @blur="validatePhone"
             />
-            <div v-if="phoneError && formSubmitted" class="invalid-feedback">
-              Số điện thoại phải có 10 chữ số và không chứa chữ cái.
-            </div>
           </div>
           <div class="mb-3">
             <label for="customerEmail" class="form-label">Email</label>
@@ -81,12 +73,64 @@
               v-model="customer.email"
               class="form-control"
               required
-              :class="{'is-invalid': emailError && formSubmitted}"
               @blur="validateEmail"
             />
-            <div v-if="emailError && formSubmitted" class="invalid-feedback">
-              Email không hợp lệ.
-            </div>
+          </div>
+          <div class="mb-3">
+            <label for="province" class="form-label">Tỉnh/Thành phố</label>
+            <select
+              id="province"
+              v-model="selectedProvince"
+              @change="fetchDistricts"
+              class="form-select"
+              required
+            >
+              <option value="" disabled>Chọn Tỉnh/Thành phố</option>
+              <option
+                v-for="province in provinces"
+                :key="province.code"
+                :value="province.code"
+              >
+                {{ province.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3" v-if="districts.length">
+            <label for="district" class="form-label">Quận/Huyện</label>
+            <select
+              id="district"
+              v-model="selectedDistrict"
+              @change="fetchWards"
+              class="form-select"
+              required
+            >
+              <option value="" disabled>Chọn Quận/Huyện</option>
+              <option
+                v-for="district in districts"
+                :key="district.code"
+                :value="district.code"
+              >
+                {{ district.name }}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3" v-if="wards.length">
+            <label for="ward" class="form-label">Phường/Xã</label>
+            <select
+              id="ward"
+              v-model="selectedWard"
+              class="form-select"
+              required
+            >
+              <option value="" disabled>Chọn Phường/Xã</option>
+              <option
+                v-for="ward in wards"
+                :key="ward.code"
+                :value="ward.code"
+              >
+                {{ ward.name }}
+              </option>
+            </select>
           </div>
           <div class="mb-3">
             <label for="customerAddress" class="form-label">Địa chỉ chi tiết</label>
@@ -95,29 +139,50 @@
               v-model="customer.address"
               class="form-control"
               required
-              :class="{'is-invalid': !customer.address && formSubmitted}"
             ></textarea>
-            <div v-if="!customer.address && formSubmitted" class="invalid-feedback">
-              Vui lòng nhập địa chỉ chi tiết.
+          </div>
+          <!-- Phương thức thanh toán -->
+          <div class="mb-3">
+            <label class="form-label">Phương thức thanh toán</label>
+            <div>
+              <div class="form-check">
+                <input
+                  type="radio"
+                  id="cod"
+                  value="COD"
+                  v-model="paymentMethod"
+                  class="form-check-input"
+                  required
+                />
+                <label for="cod" class="form-check-label">Thanh toán khi nhận hàng (COD)</label>
+              </div>
+              <div class="form-check">
+                <input
+                  type="radio"
+                  id="direct"
+                  value="Direct"
+                  v-model="paymentMethod"
+                  class="form-check-input"
+                  required
+                />
+                <label for="direct" class="form-check-label">Thanh toán trực tiếp</label>
+              </div>
             </div>
           </div>
           <div class="mb-3">
-            <label for="customerNote" class="form-label">Ghi chú</label>
-            <textarea
-              id="customerNote"
-              v-model="customer.note"
-              class="form-control"
-            ></textarea>
-          </div>
-
-          <!-- Phần xác nhận -->
+  <label for="customerNote" class="form-label">Ghi chú</label>
+  <textarea
+    id="customerNote"
+    v-model="customer.note"
+    class="form-control"
+    placeholder="Nhập ghi chú cho đơn hàng (nếu có)"
+  ></textarea>
+</div>
           <div class="d-flex justify-content-between align-items-center mt-4">
             <strong class="text-primary fs-5">
               Tổng tiền: {{ totalPrice.toLocaleString() }} VND
             </strong>
-            <button class="btn btn-success px-5" :disabled="formInvalid">
-              Xác nhận
-            </button>
+            <button class="btn btn-success px-5">Xác nhận</button>
           </div>
         </form>
       </div>
@@ -133,108 +198,123 @@ import Swal from "sweetalert2";
 const route = useRoute();
 const router = useRouter();
 const selectedItems = ref([]);
+const provinces = ref([]);
+const districts = ref([]);
+const wards = ref([]);
+const selectedProvince = ref("");
+const selectedDistrict = ref("");
+const selectedWard = ref("");
+const paymentMethod = ref(""); // Lưu phương thức thanh toán
 
-// Thông tin khách hàng
 const customer = ref({
-  id: null, // Thêm id nếu khách đã đăng nhập
+  id: null,
   name: "",
   phone: "",
   email: "",
   address: "",
-  note: "",
 });
 
-// Tính tổng tiền từ các sản phẩm được chọn
 const totalPrice = computed(() =>
-  selectedItems.value.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  )
+  selectedItems.value.reduce((total, item) => total + item.price * item.quantity, 0)
 );
-
-// Kiểm tra dữ liệu khi form được gửi
-const formSubmitted = ref(false);
-const phoneError = ref(false);
-const emailError = ref(false);
 
 const validatePhone = () => {
   const phoneRegex = /^[0-9]{10}$/;
-  phoneError.value = !phoneRegex.test(customer.value.phone);
+  if (!phoneRegex.test(customer.value.phone)) {
+    Swal.fire("Lỗi", "Số điện thoại không hợp lệ.", "error");
+  }
 };
 
 const validateEmail = () => {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  emailError.value = !emailRegex.test(customer.value.email);
-};
-
-const formInvalid = computed(() => {
-  formSubmitted.value = true;
-  validatePhone();
-  validateEmail();
-  return (
-    !customer.value.name ||
-    !customer.value.phone ||
-    !customer.value.email ||
-    !customer.value.address ||
-    phoneError.value ||
-    emailError.value
-  );
-});
-
-// Gửi đơn hàng
-const submitOrder = async () => {
-  try {
-    if (!customer.value.id) {
-      Swal.fire("Lỗi!", "Bạn cần đăng nhập trước khi đặt hàng.", "error");
-      return;
-    }
-
-    const order = {
-      customer: {
-        id: customer.value.id,
-        name: customer.value.name,
-        phone: customer.value.phone,
-        email: customer.value.email,
-        address: customer.value.address,
-        note: customer.value.note,
-      },
-      items: selectedItems.value.map((item) => ({
-        id: item.id,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-      totalPrice: totalPrice.value,
-    };
-
-    const response = await fetch("http://localhost:3001/api/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    });
-
-    if (!response.ok) {
-      throw new Error("Lỗi khi gửi đơn hàng");
-    }
-
-    const data = await response.json();
-
-    localStorage.removeItem("cart"); // Xóa giỏ hàng từ localStorage
-    selectedItems.value = []; // Xóa dữ liệu giỏ hàng trong component
-
-    Swal.fire("Thành công!", `Đơn hàng đã được lưu với mã: ${data.orderId}`, "success");
-    router.push("/my-orders"); // Điều hướng tới trang danh sách đơn hàng
-  } catch (error) {
-    console.error("Lỗi khi gửi đơn hàng:", error);
-    Swal.fire("Lỗi!", "Đã xảy ra lỗi khi lưu đơn hàng.", "error");
+  if (!emailRegex.test(customer.value.email)) {
+    Swal.fire("Lỗi", "Email không hợp lệ.", "error");
   }
 };
 
-// Lấy dữ liệu từ query và thông tin người dùng
-onMounted(() => {
+const fetchProvinces = async () => {
+  try {
+    const response = await fetch("https://provinces.open-api.vn/api/p/");
+    provinces.value = await response.json();
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách tỉnh/thành phố:", error);
+  }
+};
+
+const fetchDistricts = async () => {
+  try {
+    const response = await fetch(
+      `https://provinces.open-api.vn/api/p/${selectedProvince.value}?depth=2`
+    );
+    const data = await response.json();
+    districts.value = data.districts || [];
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách quận/huyện:", error);
+  }
+};
+
+const fetchWards = async () => {
+  try {
+    const response = await fetch(
+      `https://provinces.open-api.vn/api/d/${selectedDistrict.value}?depth=2`
+    );
+    const data = await response.json();
+    wards.value = data.wards || [];
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách phường/xã:", error);
+  }
+};
+
+const submitOrder = async () => {
+  if (!paymentMethod.value) {
+    Swal.fire("Lỗi", "Vui lòng chọn phương thức thanh toán.", "error");
+    return;
+  }
+
+  const orderData = {
+    customer: {
+      id: customer.value.id,
+      name: customer.value.name,
+      phone: customer.value.phone,
+      email: customer.value.email,
+      address: customer.value.address,
+      note: customer.value.note || "",
+    },
+    items: selectedItems.value.map((item) => ({
+      id: item.id,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+    totalPrice: totalPrice.value,
+    paymentMethod: paymentMethod.value,
+    selectedProvince: provinces.value.find((p) => p.code === selectedProvince.value)?.name,
+    selectedDistrict: districts.value.find((d) => d.code === selectedDistrict.value)?.name,
+    selectedWard: wards.value.find((w) => w.code === selectedWard.value)?.name,
+  };
+
+  try {
+    const response = await fetch("http://localhost:3001/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!response.ok) throw new Error("Lỗi khi gửi đơn hàng");
+
+    const result = await response.json();
+    Swal.fire("Thành công", `Đơn hàng của bạn đã được tạo với mã: ${result.orderId}`, "success");
+    router.push("/my-orders");
+  } catch (error) {
+    console.error("Lỗi khi gửi đơn hàng:", error);
+    Swal.fire("Lỗi", "Đã xảy ra lỗi khi tạo đơn hàng.", "error");
+  }
+};
+
+
+onMounted(async () => {
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
+
   if (!token) {
     Swal.fire({
       title: "Bạn chưa đăng nhập",
@@ -244,7 +324,9 @@ onMounted(() => {
     }).then(() => {
       router.push("/auth");
     });
+    return;
   }
+
   if (!userId) {
     Swal.fire({
       title: "Yêu cầu đăng nhập",
@@ -255,7 +337,7 @@ onMounted(() => {
       cancelButtonText: "Hủy",
     }).then((result) => {
       if (result.isConfirmed) {
-        router.push("/login");
+        router.push("/auth");
       } else {
         router.push("/cart");
       }
@@ -273,6 +355,8 @@ onMounted(() => {
       console.error("Lỗi khi giải mã dữ liệu sản phẩm:", error);
     }
   }
+
+  await fetchProvinces();
 });
 </script>
 

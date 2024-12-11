@@ -20,6 +20,11 @@
               {{ order.status }}
             </span>
           </p>
+          <p class="mb-1">
+            <strong>Phương Thức Thanh Toán:</strong> {{ order.payment_method }}
+          </p>
+          <p class="mb-1"><strong>Địa Chỉ Giao Hàng:</strong> {{ order.customer_address }}</p>
+          <p class="mb-1"><strong>Ghi Chú:</strong> {{ order.note || "Không có" }}</p>
         </div>
 
         <!-- Danh sách sản phẩm -->
@@ -62,6 +67,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -113,6 +119,7 @@ const statusClass = (status) => {
   }
 };
 </script>
+
 
 <style scoped>
 .container {
