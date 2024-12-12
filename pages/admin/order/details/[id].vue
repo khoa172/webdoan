@@ -23,6 +23,10 @@
           <p>Email: {{ order.customer_email }}</p>
           <p>Số Điện Thoại: {{ order.customer_phone }}</p>
           <p>Địa Chỉ: {{ order.customer_address }}</p>
+          <div v-if="order.status === 'Chờ xác nhận'">
+            <button class="btn btn-success" @click="confirmOrder">Xác nhận Đơn Hàng</button>
+            <button class="btn btn-danger" @click="cancelOrder">Hủy Đơn Hàng</button>
+          </div>
         </div>
   
         <h4>Danh Sách Sản Phẩm</h4>
@@ -67,6 +71,32 @@
       console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
     }
   };
+
+
+  const confirmOrder = async () => {
+  try {
+    await $fetch(`http://localhost:3001/api/orders/${order.value.id}/confirm`, {
+      method: 'PUT'
+    });
+    // Sau khi cập nhật thành công, bạn có thể fetch lại dữ liệu hoặc thay đổi trực tiếp
+    order.value.status = 'Thành công';
+  } catch (error) {
+    console.error('Lỗi khi xác nhận đơn hàng:', error);
+  }
+};
+
+const cancelOrder = async () => {
+  try {
+    await $fetch(`http://localhost:3001/api/orders/${order.value.id}/cancel`, {
+      method: 'PUT'
+    });
+    // Sau khi cập nhật thành công
+    order.value.status = 'Hủy';
+  } catch (error) {
+    console.error('Lỗi khi hủy đơn hàng:', error);
+  }
+};
+
   
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN", {
