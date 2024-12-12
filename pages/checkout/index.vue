@@ -1,190 +1,231 @@
 <template>
   <div class="container mt-5">
-    <h2 class="text-center mb-4">Thông tin thanh toán</h2>
+    <h2 class="text-center fw-bold mb-4">
+      <i class="bi bi-credit-card-fill text-success me-2"></i>Thông Tin Thanh Toán
+    </h2>
 
     <!-- Thông báo yêu cầu đăng nhập -->
-    <div v-if="!customer.id" class="alert alert-warning">
-      Bạn cần <a href="/login" class="alert-link">đăng nhập</a> trước khi đặt hàng.
+    <div v-if="!customer.id" class="alert alert-warning text-center">
+      Bạn cần <a href="/login" class="alert-link fw-semibold">đăng nhập</a> trước khi đặt hàng.
     </div>
 
     <div v-else>
       <!-- Thông tin sản phẩm -->
-      <div class="product-summary mb-4">
-        <h4 class="mb-3">Thông tin sản phẩm</h4>
-        <table class="table table-bordered text-center align-middle">
-          <thead>
-            <tr>
-              <th>Hình ảnh</th>
-              <th>Tên sản phẩm</th>
-              <th>Giá</th>
-              <th>Số lượng</th>
-              <th>Tạm tính</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in selectedItems" :key="item.id">
-              <td>
-                <img
-                  :src="item.image"
-                  alt="Product Image"
-                  class="img-thumbnail"
-                  style="max-width: 80px; max-height: 80px;"
-                />
-              </td>
-              <td>{{ item.name }}</td>
-              <td>{{ item.price.toLocaleString() }} VND</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ (item.price * item.quantity).toLocaleString() }} VND</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="product-summary mb-5">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-light border-0">
+            <h4 class="mb-0 fw-bold text-primary">
+              <i class="bi bi-cart-check me-2"></i>Thông tin sản phẩm
+            </h4>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-bordered text-center align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>Hình ảnh</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Giá</th>
+                  <th>Số lượng</th>
+                  <th>Tạm tính</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in selectedItems" :key="item.id">
+                  <td>
+                    <img
+                      :src="item.image"
+                      alt="Product Image"
+                      class="img-thumbnail shadow-sm"
+                      style="max-width: 70px; max-height: 70px;"
+                    />
+                  </td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.price.toLocaleString() }} VND</td>
+                  <td>{{ item.quantity }}</td>
+                  <td class="fw-bold text-success">{{ (item.price * item.quantity).toLocaleString() }} VND</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- Thông tin khách hàng -->
       <div class="customer-info mb-4">
-        <h4 class="mb-3">Thông tin khách hàng</h4>
-        <form @submit.prevent="submitOrder">
-          <div class="mb-3">
-            <label for="customerName" class="form-label">Họ và tên</label>
-            <input
-              type="text"
-              id="customerName"
-              v-model="customer.name"
-              class="form-control"
-              required
-            />
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-light border-0">
+            <h4 class="mb-0 fw-bold text-primary">
+              <i class="bi bi-person-badge me-2"></i>Thông tin khách hàng
+            </h4>
           </div>
-          <div class="mb-3">
-            <label for="customerPhone" class="form-label">Số điện thoại</label>
-            <input
-              type="text"
-              id="customerPhone"
-              v-model="customer.phone"
-              class="form-control"
-              required
-              @blur="validatePhone"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="customerEmail" class="form-label">Email</label>
-            <input
-              type="email"
-              id="customerEmail"
-              v-model="customer.email"
-              class="form-control"
-              required
-              @blur="validateEmail"
-            />
-          </div>
-          <div class="mb-3">
-            <label for="province" class="form-label">Tỉnh/Thành phố</label>
-            <select
-              id="province"
-              v-model="selectedProvince"
-              @change="fetchDistricts"
-              class="form-select"
-              required
-            >
-              <option value="" disabled>Chọn Tỉnh/Thành phố</option>
-              <option
-                v-for="province in provinces"
-                :key="province.code"
-                :value="province.code"
-              >
-                {{ province.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3" v-if="districts.length">
-            <label for="district" class="form-label">Quận/Huyện</label>
-            <select
-              id="district"
-              v-model="selectedDistrict"
-              @change="fetchWards"
-              class="form-select"
-              required
-            >
-              <option value="" disabled>Chọn Quận/Huyện</option>
-              <option
-                v-for="district in districts"
-                :key="district.code"
-                :value="district.code"
-              >
-                {{ district.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3" v-if="wards.length">
-            <label for="ward" class="form-label">Phường/Xã</label>
-            <select
-              id="ward"
-              v-model="selectedWard"
-              class="form-select"
-              required
-            >
-              <option value="" disabled>Chọn Phường/Xã</option>
-              <option
-                v-for="ward in wards"
-                :key="ward.code"
-                :value="ward.code"
-              >
-                {{ ward.name }}
-              </option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="customerAddress" class="form-label">Địa chỉ chi tiết</label>
-            <textarea
-              id="customerAddress"
-              v-model="customer.address"
-              class="form-control"
-              required
-            ></textarea>
-          </div>
-          <!-- Phương thức thanh toán -->
-          <div class="mb-3">
-            <label class="form-label">Phương thức thanh toán</label>
-            <div>
-              <div class="form-check">
-                <input
-                  type="radio"
-                  id="cod"
-                  value="COD"
-                  v-model="paymentMethod"
-                  class="form-check-input"
-                  required
-                />
-                <label for="cod" class="form-check-label">Thanh toán khi nhận hàng (COD)</label>
+          <div class="card-body">
+            <form @submit.prevent="submitOrder">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3 mb-md-0">
+                  <label for="customerName" class="form-label fw-semibold">Họ và tên <span class="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    id="customerName"
+                    v-model="customer.name"
+                    class="form-control"
+                    required
+                    placeholder="Ví dụ: Nguyễn Văn A"
+                  />
+                </div>
+                <div class="col-md-6">
+                  <label for="customerPhone" class="form-label fw-semibold">Số điện thoại <span class="text-danger">*</span></label>
+                  <input
+                    type="text"
+                    id="customerPhone"
+                    v-model="customer.phone"
+                    class="form-control"
+                    required
+                    @blur="validatePhone"
+                    placeholder="Ví dụ: 0901234567"
+                  />
+                </div>
               </div>
-              <div class="form-check">
+
+              <div class="mb-3">
+                <label for="customerEmail" class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
                 <input
-                  type="radio"
-                  id="direct"
-                  value="Direct"
-                  v-model="paymentMethod"
-                  class="form-check-input"
+                  type="email"
+                  id="customerEmail"
+                  v-model="customer.email"
+                  class="form-control"
                   required
+                  @blur="validateEmail"
+                  placeholder="ví dụ: email@example.com"
                 />
-                <label for="direct" class="form-check-label">Thanh toán trực tiếp</label>
               </div>
-            </div>
+
+              <hr class="my-4" />
+
+              <h5 class="fw-bold text-secondary mb-3">
+                <i class="bi bi-geo-alt-fill me-1 text-danger"></i>Địa chỉ giao hàng
+              </h5>
+              <div class="mb-3">
+                <label for="province" class="form-label fw-semibold">Tỉnh/Thành phố <span class="text-danger">*</span></label>
+                <select
+                  id="province"
+                  v-model="selectedProvince"
+                  @change="fetchDistricts"
+                  class="form-select"
+                  required
+                >
+                  <option value="" disabled>Chọn Tỉnh/Thành phố</option>
+                  <option
+                    v-for="province in provinces"
+                    :key="province.code"
+                    :value="province.code"
+                  >
+                    {{ province.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3" v-if="districts.length">
+                <label for="district" class="form-label fw-semibold">Quận/Huyện <span class="text-danger">*</span></label>
+                <select
+                  id="district"
+                  v-model="selectedDistrict"
+                  @change="fetchWards"
+                  class="form-select"
+                  required
+                >
+                  <option value="" disabled>Chọn Quận/Huyện</option>
+                  <option
+                    v-for="district in districts"
+                    :key="district.code"
+                    :value="district.code"
+                  >
+                    {{ district.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3" v-if="wards.length">
+                <label for="ward" class="form-label fw-semibold">Phường/Xã <span class="text-danger">*</span></label>
+                <select
+                  id="ward"
+                  v-model="selectedWard"
+                  class="form-select"
+                  required
+                >
+                  <option value="" disabled>Chọn Phường/Xã</option>
+                  <option
+                    v-for="ward in wards"
+                    :key="ward.code"
+                    :value="ward.code"
+                  >
+                    {{ ward.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="customerAddress" class="form-label fw-semibold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
+                <textarea
+                  id="customerAddress"
+                  v-model="customer.address"
+                  class="form-control"
+                  required
+                  placeholder="Ví dụ: Số nhà 123, Đường ABC, Phường XYZ..."
+                ></textarea>
+              </div>
+
+              <hr class="my-4" />
+
+              <!-- Phương thức thanh toán -->
+              <h5 class="fw-bold text-secondary mb-3">
+                <i class="bi bi-cash-stack me-1 text-success"></i>Phương thức thanh toán
+              </h5>
+              <div class="mb-3">
+                <div class="form-check mb-2">
+                  <input
+                    type="radio"
+                    id="cod"
+                    value="COD"
+                    v-model="paymentMethod"
+                    class="form-check-input"
+                    required
+                  />
+                  <label for="cod" class="form-check-label fw-semibold">Thanh toán khi nhận hàng (COD)</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="radio"
+                    id="direct"
+                    value="Direct"
+                    v-model="paymentMethod"
+                    class="form-check-input"
+                    required
+                  />
+                  <label for="direct" class="form-check-label fw-semibold">Thanh toán trực tiếp</label>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="customerNote" class="form-label fw-semibold">Ghi chú</label>
+                <textarea
+                  id="customerNote"
+                  v-model="customer.note"
+                  class="form-control"
+                  placeholder="Nhập ghi chú cho đơn hàng (nếu có)"
+                ></textarea>
+              </div>
+
+              <hr class="my-4" />
+
+              <div class="d-flex justify-content-between align-items-center">
+                <strong class="text-primary fs-5">
+                  Tổng tiền: {{ totalPrice.toLocaleString() }} VND
+                </strong>
+                <button class="btn btn-success px-5 py-2 fs-6">
+                  <i class="bi bi-check2-circle me-1"></i>Xác nhận
+                </button>
+              </div>
+
+            </form>
           </div>
-          <div class="mb-3">
-  <label for="customerNote" class="form-label">Ghi chú</label>
-  <textarea
-    id="customerNote"
-    v-model="customer.note"
-    class="form-control"
-    placeholder="Nhập ghi chú cho đơn hàng (nếu có)"
-  ></textarea>
-</div>
-          <div class="d-flex justify-content-between align-items-center mt-4">
-            <strong class="text-primary fs-5">
-              Tổng tiền: {{ totalPrice.toLocaleString() }} VND
-            </strong>
-            <button class="btn btn-success px-5">Xác nhận</button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -206,7 +247,7 @@ const wards = ref([]);
 const selectedProvince = ref("");
 const selectedDistrict = ref("");
 const selectedWard = ref("");
-const paymentMethod = ref(""); // Lưu phương thức thanh toán
+const paymentMethod = ref("");
 
 const customer = ref({
   id: null,
@@ -317,7 +358,6 @@ const submitOrder = async () => {
   }
 };
 
-
 onMounted(async () => {
   const userId = localStorage.getItem("userId");
   const token = localStorage.getItem("token");
@@ -370,6 +410,24 @@ onMounted(async () => {
 <style scoped>
 .container {
   max-width: 800px;
-  margin: 0 auto;
+}
+.card-header {
+  font-size: 1.1rem;
+}
+.card {
+  border-radius: 8px;
+}
+.table thead th {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.table tbody td {
+  font-size: 0.85rem;
+}
+.form-label {
+  font-size: 0.9rem;
+}
+.form-select, .form-control {
+  font-size: 0.9rem;
 }
 </style>

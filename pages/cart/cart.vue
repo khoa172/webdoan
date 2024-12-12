@@ -1,17 +1,25 @@
 <template>
   <div class="container mt-5">
-    <h2 class="mb-4 text-center">Giỏ Hàng</h2>
+    <div class="d-flex align-items-center justify-content-center mb-4">
+      <h2 class="fw-bold text-dark mb-0">
+        <i class="bi bi-cart-check-fill me-2 text-success"></i>Giỏ Hàng
+      </h2>
+    </div>
 
     <!-- Nếu giỏ hàng trống -->
     <div v-if="cartItems.length === 0" class="text-center py-5">
-      <p class="fs-5 text-muted">Giỏ hàng của bạn hiện tại trống.</p>
+      <i class="bi bi-cart-x fs-1 text-muted"></i>
+      <p class="fs-5 text-muted mt-3">Giỏ hàng của bạn hiện tại trống.</p>
+      <router-link to="/" class="btn btn-outline-primary mt-3">
+        Tiếp tục mua sắm
+      </router-link>
     </div>
 
     <!-- Nếu giỏ hàng có sản phẩm -->
     <div v-else>
       <div class="cart-list">
         <div
-          class="cart-item row align-items-center mb-3 p-3 border rounded"
+          class="cart-item row align-items-center mb-3 p-3 rounded"
           v-for="item in cartItems"
           :key="item.id"
           :class="{ 'selected-item': selectedItems.includes(item) }"
@@ -23,6 +31,7 @@
               v-model="selectedItems"
               :value="item"
               class="form-check-input"
+              style="transform: scale(1.2); cursor: pointer;"
             />
           </div>
 
@@ -36,10 +45,12 @@
               :src="item.image"
               alt="product image"
               class="img-fluid rounded shadow-sm me-3"
-              style="max-width: 100px; max-height: 100px;"
+              style="max-width: 90px; max-height: 90px; object-fit: cover;"
             />
             <div>
-              <h5 class="mb-1 text-primary">{{ item.name }}</h5>
+              <h5 class="mb-1 text-primary text-truncate" style="max-width: 200px;">
+                {{ item.name }}
+              </h5>
               <p class="text-muted mb-1">Mã SP: {{ item.code }}</p>
               <p class="text-muted mb-0">{{ item.price.toLocaleString() }} VND</p>
             </div>
@@ -66,7 +77,7 @@
 
           <!-- Cột Tổng tiền -->
           <div class="col-2 text-center">
-            <strong class="text-success">
+            <strong class="text-success fs-6">
               {{ (item.price * item.quantity).toLocaleString() }} VND
             </strong>
           </div>
@@ -84,20 +95,20 @@
       </div>
 
       <!-- Phần Tổng tiền -->
-      <div class="cart-summary mt-4 p-3 border rounded bg-light">
+      <div class="cart-summary mt-4 p-3 rounded bg-light border">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="mb-0">Tạm tính:</h5>
-          <h5 class="mb-0 text-primary">
+          <h5 class="mb-0 text-secondary">Tạm tính:</h5>
+          <h5 class="mb-0 text-primary fs-4">
             {{ selectedTotalPrice.toLocaleString() }} VND
           </h5>
         </div>
         <div class="text-end">
           <button
-            class="btn btn-success px-4"
+            class="btn btn-success px-4 py-2 fs-6"
             :disabled="selectedItems.length === 0"
             @click="proceedToCheckout"
           >
-            Mua Ngay
+            <i class="bi bi-cash-stack me-1"></i>Mua Ngay
           </button>
         </div>
       </div>
@@ -106,16 +117,16 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
-import { useRouter } from "vue-router"; // Import router để điều hướng
-import { useCartStore } from "@/stores/cart"; // Import store giỏ hàng
-import Swal from "sweetalert2"; // Import SweetAlert2
+import { computed, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useCartStore } from "@/stores/cart";
+import Swal from "sweetalert2";
 
-const router = useRouter(); // Khởi tạo router
+const router = useRouter();
 const cartStore = useCartStore();
 
 const cartItems = computed(() => cartStore.items);
-const selectedItems = ref([]); // Lưu trạng thái sản phẩm được chọn
+const selectedItems = ref([]);
 
 // Tính tổng giá trị của các sản phẩm đã chọn
 const selectedTotalPrice = computed(() =>
@@ -125,7 +136,6 @@ const selectedTotalPrice = computed(() =>
   )
 );
 
-// Chuyển đến trang chi tiết sản phẩm
 const goToDetail = (productId) => {
   router.push(`/product/${productId}`);
 };
@@ -142,13 +152,13 @@ const increaseQuantity = (productId) => {
   cartStore.addToCart({ id: productId });
 };
 
-// Điều hướng đến trang checkout với dữ liệu sản phẩm được chọn
+// Điều hướng đến trang checkout
 const proceedToCheckout = () => {
   if (selectedItems.value.length > 0) {
     router.push({
-      name: "checkout", // Tên route của trang checkout
+      name: "checkout",
       query: {
-        items: JSON.stringify(selectedItems.value), // Truyền dữ liệu sản phẩm qua query string
+        items: JSON.stringify(selectedItems.value),
       },
     });
   } else {
@@ -159,6 +169,7 @@ const proceedToCheckout = () => {
     });
   }
 };
+
 onMounted(() => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -172,36 +183,34 @@ onMounted(() => {
     });
   }
 });
-
 </script>
 
 <style scoped>
 .cart-item {
   background-color: #fff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .cart-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .cart-item.selected-item {
   background-color: #eaf5ff;
-  border-color: #007bff;
+  border-color: #0d6efd;
 }
 
 .product-info:hover h5 {
-  color: #0056b3;
+  color: #0a58ca !important;
 }
 
 .cart-summary {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
+  background-color: #fafafa;
 }
 
-.text-end button {
-  font-size: 16px;
+.cart-summary h5 {
+  font-weight: 600;
 }
 </style>

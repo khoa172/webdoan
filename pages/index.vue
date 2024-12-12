@@ -1,76 +1,118 @@
 <template>
   <div class="container mt-5">
-    <div class="row">
+    <div class="row g-4">
       <!-- Sidebar bộ lọc -->
       <div class="col-md-3">
-        <div class="card shadow-sm p-3 mb-4">
-          <h5 class="fw-bold text-primary mb-3">Lọc sản phẩm</h5>
-          <!-- Tìm kiếm -->
-          <input
-            type="text"
-            class="form-control mb-3"
-            placeholder="Tìm kiếm sản phẩm..."
-            v-model="searchQuery"
-          />
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="fw-bold text-primary mb-4">
+              <i class="bi bi-funnel-fill me-2"></i>Lọc sản phẩm
+            </h5>
+            <!-- Tìm kiếm -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-muted">
+                <i class="bi bi-search me-1"></i>Tìm kiếm
+              </label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Nhập tên sản phẩm..."
+                v-model="searchQuery"
+              />
+            </div>
 
-          <!-- Sắp xếp -->
-          <h6 class="fw-bold">Sắp xếp theo</h6>
-          <select class="form-select mb-3" v-model="sortBy">
-            <option value="">Mặc định</option>
-            <option value="name">Tên sản phẩm</option>
-            <option value="price">Giá</option>
-          </select>
-          <select class="form-select mb-3" v-model="sortOrder">
-            <option value="asc">Tăng dần</option>
-            <option value="desc">Giảm dần</option>
-          </select>
+            <!-- Sắp xếp -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-muted">
+                <i class="bi bi-sort-alpha-down me-1"></i>Sắp xếp theo
+              </label>
+              <select class="form-select mb-2" v-model="sortBy">
+                <option value="">Mặc định</option>
+                <option value="name">Tên sản phẩm</option>
+                <option value="price">Giá</option>
+              </select>
+              <select class="form-select" v-model="sortOrder">
+                <option value="asc">Tăng dần</option>
+                <option value="desc">Giảm dần</option>
+              </select>
+            </div>
 
-          <!-- Lọc theo thương hiệu -->
-          <h6 class="fw-bold">Thương hiệu</h6>
-          <select class="form-select mb-3" v-model="selectedBrand">
-            <option value="">Tất cả</option>
-            <option v-for="brand in brands" :key="brand.id" :value="brand.id">
-              {{ brand.name }}
-            </option>
-          </select>
+            <!-- Lọc theo thương hiệu -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-muted">
+                <i class="bi bi-tags-fill me-1"></i>Thương hiệu
+              </label>
+              <select class="form-select" v-model="selectedBrand">
+                <option value="">Tất cả</option>
+                <option
+                  v-for="brand in brands"
+                  :key="brand.id"
+                  :value="brand.id"
+                >
+                  {{ brand.name }}
+                </option>
+              </select>
+            </div>
 
-          <!-- Lọc theo danh mục -->
-          <h6 class="fw-bold">Danh mục</h6>
-          <select class="form-select mb-3" v-model="selectedCategory">
-            <option value="">Tất cả</option>
-            <option v-for="category in categories" :key="category.id" :value="category.id">
-              {{ category.name }}
-            </option>
-          </select>
+            <!-- Lọc theo danh mục -->
+            <div class="mb-4">
+              <label class="form-label fw-bold text-muted">
+                <i class="bi bi-list-ul me-1"></i>Danh mục
+              </label>
+              <select class="form-select" v-model="selectedCategory">
+                <option value="">Tất cả</option>
+                <option
+                  v-for="category in categories"
+                  :key="category.id"
+                  :value="category.id"
+                >
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
 
-          <!-- Lọc theo RAM -->
-          <h6 class="fw-bold">Dung lượng RAM</h6>
-          <select class="form-select" v-model="selectedRam">
-            <option value="">Tất cả</option>
-            <option v-for="ram in ramOptions" :key="ram" :value="ram">
-              {{ ram }}
-            </option>
-          </select>
+            <!-- Lọc theo RAM -->
+            <div>
+              <label class="form-label fw-bold text-muted">
+                <i class="bi bi-memory me-1"></i>Dung lượng RAM
+              </label>
+              <select class="form-select" v-model="selectedRam">
+                <option value="">Tất cả</option>
+                <option v-for="ram in ramOptions" :key="ram" :value="ram">
+                  {{ ram }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Danh sách sản phẩm -->
       <div class="col-md-9">
-        <div class="row">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-bold text-dark mb-0">Danh Sách Sản Phẩm</h4>
+        </div>
+
+        <div class="row g-3">
           <div
             v-for="product in filteredProducts"
             :key="product.id"
-            class="col-md-4 mb-4"
+            class="col-sm-6 col-md-4"
           >
-            <div class="card h-100 shadow-sm">
-              <img
-                :src="`http://localhost:3001/uploads/${product.image}`"
-                class="card-img-top"
-                alt="Product Image"
-              />
+            <div class="card h-100 shadow-sm border-0">
+              <div class="p-3 text-center bg-light">
+                <img
+                  :src="`http://localhost:3001/uploads/${product.image}`"
+                  class="img-fluid"
+                  alt="Product Image"
+                  style="max-height: 180px; object-fit: contain;"
+                />
+              </div>
               <div class="card-body">
-                <h6 class="card-title text-truncate">{{ product.name }}</h6>
-                <p class="card-text text-danger fw-bold">
+                <h6 class="card-title text-truncate mb-2 fw-bold">
+                  {{ product.name }}
+                </h6>
+                <p class="card-text text-danger fw-bold mb-3">
                   {{ formatPrice(product.price) }}
                 </p>
                 <button
@@ -86,7 +128,11 @@
 
         <!-- Thông báo khi không có sản phẩm -->
         <div v-if="filteredProducts.length === 0" class="text-center mt-5">
-          <p class="text-muted">Không tìm thấy sản phẩm phù hợp.</p>
+          <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+          <p class="text-muted mt-3">
+            Không tìm thấy sản phẩm phù hợp.<br/>
+            Hãy thử thay đổi tiêu chí lọc hoặc sắp xếp.
+          </p>
         </div>
       </div>
     </div>
@@ -97,10 +143,11 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
+// State và biến
 const products = ref([]);
 const brands = ref([]);
 const categories = ref([]);
-const ramOptions = ref(["4 GB", "6 GB", "8 GB", "12 GB"]); // Các tùy chọn RAM
+const ramOptions = ref(["4 GB", "6 GB", "8 GB", "12 GB"]); 
 const searchQuery = ref("");
 const sortBy = ref("");
 const sortOrder = ref("asc");
@@ -183,31 +230,27 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.container {
+  max-width: 1200px;
+}
+
 .card {
   border-radius: 10px;
 }
 
 .card img {
-  max-height: 200px;
-  object-fit: contain; /* Hiển thị đầy đủ hình ảnh mà không bị cắt */
-  border-radius: 10px 10px 0 0;
-  width: 100%;
+  border-radius: 10px;
 }
 
 .card-title {
   font-size: 1rem;
-  font-weight: bold;
 }
 
-.card-text {
+.form-label {
   font-size: 0.9rem;
 }
 
-.card .btn {
-  margin-top: 10px;
-}
-
-.container {
-  max-width: 1200px;
+.bi {
+  vertical-align: -0.125em; 
 }
 </style>

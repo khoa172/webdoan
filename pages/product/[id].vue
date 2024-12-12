@@ -1,67 +1,107 @@
 <template>
   <div class="container mt-5">
-    <div v-if="product" class="card shadow-lg border-0">
-      <!-- Hình ảnh sản phẩm -->
-      <div class="row g-0">
+    <div v-if="product" class="card shadow-lg border-0 p-3">
+      <div class="row g-4">
+
+        <!-- Cột Hình ảnh sản phẩm -->
         <div class="col-md-6">
-          <div class="p-4 text-center">
+          <div v-if="product.images && product.images.length > 1" id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner rounded shadow-sm">
+              <div
+                v-for="(img, index) in product.images"
+                :key="index"
+                class="carousel-item"
+                :class="{ active: index === 0 }"
+              >
+                <img
+                  :src="`http://localhost:3001/uploads/${img}`"
+                  class="d-block w-100"
+                  alt="Product Image"
+                  style="object-fit: cover; max-height: 400px;"
+                />
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div v-else class="text-center">
             <img
               :src="product.images && product.images[0] ? `http://localhost:3001/uploads/${product.images[0]}` : '/path/to/default-image.jpg'"
-              class="img-fluid rounded"
+              class="img-fluid rounded shadow-sm"
               alt="Product Image"
               style="max-height: 400px; object-fit: cover;"
             />
           </div>
         </div>
 
-        <!-- Thông tin sản phẩm -->
+        <!-- Cột Thông tin sản phẩm -->
         <div class="col-md-6">
-          <div class="card-body p-4">
+          <div class="card-body h-100 d-flex flex-column">
+            <!-- Brand và Category (nếu có) -->
+            <div class="d-flex align-items-center mb-2">
+              <span v-if="product.brand_name" class="badge bg-info text-dark me-2">
+                <i class="bi bi-tags-fill me-1"></i>{{ product.brand_name }}
+              </span>
+              <span v-if="product.category_name" class="badge bg-secondary">
+                <i class="bi bi-list-ul me-1"></i>{{ product.category_name }}
+              </span>
+            </div>
+
             <h2 class="card-title fw-bold text-primary">{{ product.name }}</h2>
             <h4 class="card-subtitle mb-3 text-danger">
               {{ formatPrice(product.price) }}
             </h4>
-            <p class="card-text text-muted mb-4">
+            <p class="card-text text-muted" style="white-space: pre-line;">
               {{ product.description }}
             </p>
 
+            <hr class="my-4" />
+
             <!-- Thông số kỹ thuật -->
-            <h5 class="fw-bold mb-3">Thông số kỹ thuật</h5>
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-info-circle me-1 text-primary"></i>Thông Số Kỹ Thuật
+            </h5>
             <ul class="list-group list-group-flush mb-4">
-              <li class="list-group-item">
-                <strong>Màn Hình:</strong> {{ product.screen }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Màn Hình:</strong> <span>{{ product.screen }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>RAM:</strong> {{ product.ram }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>RAM:</strong> <span>{{ product.ram }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>CPU:</strong> {{ product.cpu }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>CPU:</strong> <span>{{ product.cpu }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>Bộ Nhớ:</strong> {{ product.memory }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Bộ Nhớ:</strong> <span>{{ product.memory }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>Hệ Điều Hành:</strong> {{ product.operating_system }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Hệ Điều Hành:</strong> <span>{{ product.operating_system }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>Camera Trước:</strong> {{ product.front_camera }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Camera Trước:</strong> <span>{{ product.front_camera }}</span>
               </li>
-              <li class="list-group-item">
-                <strong>Camera Sau:</strong> {{ product.rear_camera }}
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Camera Sau:</strong> <span>{{ product.rear_camera }}</span>
               </li>
             </ul>
 
-            <!-- Nút hành động -->
-            <div class="d-flex gap-3">
-              <button class="btn btn-primary btn-lg flex-fill" @click="buyNow">
-                Mua Ngay
-              </button>
-              <button
-                class="btn btn-outline-secondary btn-lg flex-fill"
-                @click="addToCart"
-              >
-                <i class="bi bi-cart-plus"></i> Thêm Vào Giỏ Hàng
-              </button>
+            <div class="mt-auto">
+              <div class="d-flex gap-3">
+                <button class="btn btn-primary btn-lg flex-fill" @click="buyNow">
+                  <i class="bi bi-lightning-fill me-1"></i>Mua Ngay
+                </button>
+                <button
+                  class="btn btn-outline-secondary btn-lg flex-fill"
+                  @click="addToCart"
+                >
+                  <i class="bi bi-cart-plus me-1"></i>Thêm Vào Giỏ Hàng
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -72,9 +112,9 @@
     <div v-else>
       <div class="text-center mt-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">Đang tải...</span>
         </div>
-        <p class="mt-3">Đang tải thông tin sản phẩm...</p>
+        <p class="mt-3 text-muted">Đang tải thông tin sản phẩm...</p>
       </div>
     </div>
   </div>
@@ -155,17 +195,27 @@ onMounted(fetchProductDetails);
   border-radius: 10px;
 }
 
-.card img {
-  border-radius: 10px;
+.badge {
+  font-size: 0.85rem;
 }
 
 .card-title {
   font-size: 1.8rem;
+  line-height: 1.2;
 }
 
 .card-subtitle {
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.list-group-item {
+  font-size: 0.95rem;
 }
 
 .spinner-border {
