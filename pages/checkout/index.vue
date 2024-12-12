@@ -160,6 +160,8 @@
                   </option>
                 </select>
               </div>
+
+              <!-- Địa chỉ chi tiết -->
               <div class="mb-3">
                 <label for="customerAddress" class="form-label fw-semibold">Địa chỉ chi tiết <span class="text-danger">*</span></label>
                 <textarea
@@ -167,7 +169,7 @@
                   v-model="customer.address"
                   class="form-control"
                   required
-                  placeholder="Ví dụ: Số nhà 123, Đường ABC, Phường XYZ..."
+                  placeholder="Ví dụ: Số nhà 123, Đường ABC..."
                 ></textarea>
               </div>
 
@@ -314,13 +316,20 @@ const submitOrder = async () => {
     return;
   }
 
+  const selectedProvinceName = provinces.value.find((p) => p.code === selectedProvince.value)?.name || "";
+  const selectedDistrictName = districts.value.find((d) => d.code === selectedDistrict.value)?.name || "";
+  const selectedWardName = wards.value.find((w) => w.code === selectedWard.value)?.name || "";
+
+  // Gộp địa chỉ chi tiết với Tỉnh/Thành, Quận/Huyện, Phường/Xã
+  const fullAddress = `${customer.value.address}, ${selectedWardName}, ${selectedDistrictName}, ${selectedProvinceName}`;
+
   const orderData = {
     customer: {
       id: customer.value.id,
       name: customer.value.name,
       phone: customer.value.phone,
       email: customer.value.email,
-      address: customer.value.address,
+      address: fullAddress, // Lưu đầy đủ thông tin vào address
       note: customer.value.note || "",
     },
     items: selectedItems.value.map((item) => ({
@@ -330,9 +339,10 @@ const submitOrder = async () => {
     })),
     totalPrice: totalPrice.value,
     paymentMethod: paymentMethod.value,
-    selectedProvince: provinces.value.find((p) => p.code === selectedProvince.value)?.name,
-    selectedDistrict: districts.value.find((d) => d.code === selectedDistrict.value)?.name,
-    selectedWard: wards.value.find((w) => w.code === selectedWard.value)?.name,
+    // Vẫn gửi riêng nếu cần xử lý phía backend
+    selectedProvince: selectedProvinceName,
+    selectedDistrict: selectedDistrictName,
+    selectedWard: selectedWardName,
   };
 
   try {
