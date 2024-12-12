@@ -29,4 +29,6 @@ export default defineNuxtConfig({
     },
   },
   modules: ['@pinia/nuxt'],
+
+  plugins: ["~/plugins/snow.js"],
 });
