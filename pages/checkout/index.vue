@@ -194,7 +194,9 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import { useCartStore } from "@/stores/cart";
 
+const cartStore = useCartStore();
 const route = useRoute();
 const router = useRouter();
 const selectedItems = ref([]);
@@ -303,6 +305,11 @@ const submitOrder = async () => {
 
     const result = await response.json();
     Swal.fire("Thành công", `Đơn hàng của bạn đã được tạo với mã: ${result.orderId}`, "success");
+
+    selectedItems.value.forEach(item => {
+      cartStore.removeFromCart(item.id);
+    });
+
     router.push("/my-orders");
   } catch (error) {
     console.error("Lỗi khi gửi đơn hàng:", error);

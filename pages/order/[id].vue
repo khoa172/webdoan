@@ -41,7 +41,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in order.items" :key="item.id">
+              <tr v-for="(item, index) in order.items" :key="index">
                 <td>{{ item.name }}</td>
                 <td class="text-center">{{ item.quantity }}</td>
                 <td class="text-end">{{ formatPrice(item.price / item.quantity) }}</td>
@@ -57,10 +57,17 @@
           </table>
         </div>
 
-        <!-- Nút quay lại -->
-        <div class="text-end">
+        <!-- Nút quay lại và hủy đơn hàng (nếu khả dụng) -->
+        <div class="d-flex justify-content-end gap-2">
           <button class="btn btn-secondary" @click="goBack">
             Quay Lại
+          </button>
+          <button
+            class="btn btn-danger"
+            v-if="order.status === 'Chờ xác nhận'"
+            @click="cancelOrder"
+          >
+            Hủy Đơn Hàng
           </button>
         </div>
       </div>
@@ -68,10 +75,10 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import Swal from "sweetalert2";
 
 const route = useRoute();
 const router = useRouter();
@@ -118,8 +125,26 @@ const statusClass = (status) => {
       return "text-muted";
   }
 };
-</script>
 
+const cancelOrder = async () => {
+  const { id } = route.params;
+  try {
+    const response = await fetch(`http://localhost:3001/api/orders/${id}/cancel`, {
+      method: "PUT",
+    });
+    if (response.ok) {
+      Swal.fire("Thành công", "Đơn hàng đã được hủy", "success");
+      await loadOrderDetails(); // Tải lại thông tin đơn hàng (để cập nhật trạng thái)
+    } else {
+      const errData = await response.json();
+      Swal.fire("Lỗi", errData.message || "Không thể hủy đơn hàng", "error");
+    }
+  } catch (error) {
+    console.error(error.message);
+    Swal.fire("Lỗi", "Đã xảy ra lỗi khi hủy đơn hàng", "error");
+  }
+};
+</script>
 
 <style scoped>
 .container {
@@ -134,7 +159,7 @@ const statusClass = (status) => {
 }
 
 .card-body p {
-  font-size: 0.875rem; /* Làm nhỏ chữ thông tin */
+  font-size: 0.875rem;
   margin-bottom: 0.5rem;
 }
 
