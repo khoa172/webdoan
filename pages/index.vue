@@ -1,13 +1,50 @@
 <template>
   <div class="container mt-5">
+    <!-- Phần Banner (Slider) trên cùng -->
+    <div class="row mb-3" v-if="sliders.length > 0">
+      <div class="col-12">
+        <div id="topSlider" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+          <div class="carousel-inner">
+            <div 
+              v-for="(slider, index) in sliders" 
+              :key="slider.id" 
+              :class="['carousel-item', { active: index === 0 }]"
+            >
+              <img 
+                :src="`http://localhost:3001/uploads/${slider.image[currentImageIndexes[index]]}`" 
+                class="d-block w-100 rounded" 
+                alt="Banner Image"
+                style="object-fit:cover; height:200px;"
+              >
+            </div>
+          </div>
+          <!-- Nút chuyển banner -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Thanh và nút lọc -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4 class="fw-bold text-dark mb-0">Danh Sách Sản Phẩm</h4>
+      <button class="btn btn-outline-primary btn-sm" @click="toggleFilters">
+        <i class="bi bi-funnel-fill me-1"></i>Lọc sản phẩm
+      </button>
+    </div>
+
     <div class="row g-4">
       <!-- Sidebar bộ lọc -->
-      <div class="col-md-3">
+      <div class="col-12 col-md-3" v-if="showFilters">
         <div class="card shadow-sm border-0">
-          <div class="card-body">
-            <h5 class="fw-bold text-primary mb-4">
-              <i class="bi bi-funnel-fill me-2"></i>Lọc sản phẩm
-            </h5>
+          <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="fw-bold text-primary mb-0">
+                <i class="bi bi-funnel-fill me-2"></i>Lọc sản phẩm
+              </h5>
+              <button class="btn btn-sm btn-light" @click="toggleFilters">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+
             <!-- Tìm kiếm -->
             <div class="mb-4">
               <label class="form-label fw-bold text-muted">
@@ -88,51 +125,57 @@
       </div>
 
       <!-- Danh sách sản phẩm -->
-      <div class="col-md-9">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-          <h4 class="fw-bold text-dark mb-0">Danh Sách Sản Phẩm</h4>
-        </div>
-
-        <div class="row g-3">
-          <div
-            v-for="product in filteredProducts"
-            :key="product.id"
-            class="col-sm-6 col-md-4"
-          >
-            <div class="card h-100 shadow-sm border-0">
-              <div class="p-3 text-center bg-light">
-                <img
-                  :src="`http://localhost:3001/uploads/${product.image}`"
-                  class="img-fluid"
-                  alt="Product Image"
-                  style="max-height: 180px; object-fit: contain;"
-                />
-              </div>
-              <div class="card-body">
-                <h6 class="card-title text-truncate mb-2 fw-bold">
-                  {{ product.name }}
-                </h6>
-                <p class="card-text text-danger fw-bold mb-3">
-                  {{ formatPrice(product.price) }}
-                </p>
-                <button
-                  class="btn btn-primary btn-sm w-100"
-                  @click="goToDetail(product.id)"
-                >
-                  Xem Chi Tiết
-                </button>
+      <div :class="showFilters ? 'col-md-9' : 'col-12'">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light d-flex align-items-center justify-content-between">
+            <h5 class="mb-0 fw-bold text-secondary">
+              <i class="bi bi-grid-3x3-gap-fill me-1"></i>Kết quả: {{ filteredProducts.length }} sản phẩm
+            </h5>
+            <!-- Gợi ý thêm phân trang hoặc sắp xếp nâng cao tại đây -->
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div
+                v-for="product in filteredProducts"
+                :key="product.id"
+                class="col-6 col-sm-4 col-md-3 col-lg-2"
+              >
+                <div class="card h-100 shadow-sm border-0 product-card">
+                  <div class="p-3 text-center bg-light">
+                    <img
+                      :src="`http://localhost:3001/uploads/${product.image}`"
+                      class="img-fluid"
+                      alt="Product Image"
+                      style="max-height: 150px; object-fit: contain;"
+                    />
+                  </div>
+                  <div class="card-body d-flex flex-column">
+                    <h6 class="card-title text-truncate mb-2 fw-bold">
+                      {{ product.name }}
+                    </h6>
+                    <p class="card-text text-danger fw-bold mb-3">
+                      {{ formatPrice(product.price) }}
+                    </p>
+                    <button
+                      class="btn btn-primary btn-sm mt-auto"
+                      @click="goToDetail(product.id)"
+                    >
+                      Xem Chi Tiết
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Thông báo khi không có sản phẩm -->
-        <div v-if="filteredProducts.length === 0" class="text-center mt-5">
-          <i class="bi bi-emoji-frown fs-1 text-muted"></i>
-          <p class="text-muted mt-3">
-            Không tìm thấy sản phẩm phù hợp.<br/>
-            Hãy thử thay đổi tiêu chí lọc hoặc sắp xếp.
-          </p>
+            <!-- Thông báo khi không có sản phẩm -->
+            <div v-if="filteredProducts.length === 0" class="text-center mt-5">
+              <i class="bi bi-emoji-frown fs-1 text-muted"></i>
+              <p class="text-muted mt-3">
+                Không tìm thấy sản phẩm phù hợp.<br/>
+                Hãy thử thay đổi tiêu chí lọc hoặc sắp xếp.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -143,10 +186,10 @@
 import { ref, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-// State và biến
 const products = ref([]);
 const brands = ref([]);
 const categories = ref([]);
+const sliders = ref([]); // Lưu danh sách banner từ API
 const ramOptions = ref(["4 GB", "6 GB", "8 GB", "12 GB"]); 
 const searchQuery = ref("");
 const sortBy = ref("");
@@ -154,9 +197,14 @@ const sortOrder = ref("asc");
 const selectedBrand = ref("");
 const selectedCategory = ref("");
 const selectedRam = ref("");
+const showFilters = ref(false);
+
 const router = useRouter();
 
-// Lấy danh sách sản phẩm, thương hiệu, danh mục
+const toggleFilters = () => {
+  showFilters.value = !showFilters.value;
+};
+
 const fetchProducts = async () => {
   try {
     const response = await $fetch("http://localhost:3001/api/products");
@@ -178,7 +226,37 @@ const fetchBrandsAndCategories = async () => {
   }
 };
 
-// Lọc và sắp xếp sản phẩm
+// Lấy danh sách banner
+const currentImageIndexes = ref([]); // Lưu vị trí ảnh hiện tại của từng slider
+
+// Lấy danh sách banner
+const fetchSliders = async () => {
+  try {
+    const data = await $fetch("http://localhost:3001/api/sliders");
+    sliders.value = data.map((slider) => ({
+      ...slider,
+      image: Array.isArray(slider.image) ? slider.image : [slider.image],
+    }));
+    // Khởi tạo chỉ mục ảnh cho mỗi slider
+    currentImageIndexes.value = sliders.value.map(() => 0);
+    console.log(sliders.value);
+    console.log("Sliders:", sliders.value);
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách banner:", error);
+  }
+};
+
+// Hàm tự động chuyển ảnh
+const rotateImages = () => {
+  setInterval(() => {
+    currentImageIndexes.value = currentImageIndexes.value.map((currentIndex, sliderIndex) => {
+      const totalImages = sliders.value[sliderIndex].image.length;
+      return (currentIndex + 1) % totalImages; // Chuyển sang ảnh tiếp theo, quay lại đầu nếu hết
+    });
+  }, 3000); // Chuyển ảnh mỗi 3 giây
+};
+
+
 const filteredProducts = computed(() => {
   let filtered = [...products.value];
 
@@ -226,6 +304,8 @@ const formatPrice = (price) => {
 onMounted(async () => {
   await fetchProducts();
   await fetchBrandsAndCategories();
+  await fetchSliders(); 
+  rotateImages();// Lấy dữ liệu banner từ API
 });
 </script>
 
@@ -236,6 +316,12 @@ onMounted(async () => {
 
 .card {
   border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .card img {
@@ -243,7 +329,16 @@ onMounted(async () => {
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 0.9rem;
+}
+
+.card-text {
+  font-size: 0.85rem;
+}
+
+.product-card .card-body {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-label {

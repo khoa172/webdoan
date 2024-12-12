@@ -25,6 +25,11 @@
           Quản Lý Đơn Hàng
         </nuxt-link>
       </li>
+      <li>
+        <nuxt-link to="/admin/banner" class="nav-link" exact-active-class="active">
+          Quản Lý Banner
+        </nuxt-link>
+      </li>
       </ul>
     </div>
   </template>

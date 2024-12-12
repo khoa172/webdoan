@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     'font-awesome/css/font-awesome.css',  // Thêm Font Awesome CSS
     "bootstrap-icons/font/bootstrap-icons.css"
   ],
-
+  
 
   // Cấu hình build để Vuetify được biên dịch đúng
   build: {
