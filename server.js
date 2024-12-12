@@ -6,7 +6,8 @@ const customerRoutes = require('./routes/customerRoutes');
 const productRoutes = require('./routes/productRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const orderRoutes = require('./routes/orderRoutes'); // Import order routes
+const orderRoutes = require('./routes/orderRoutes'); 
+const sliderRoutes = require('./routes/sliderRoutes');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes); // Thêm route đơn hàng
+app.use('/api/sliders', sliderRoutes);
 
 // Khởi động server
 const PORT = 3001;
