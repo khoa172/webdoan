@@ -1,55 +1,65 @@
 <template>
   <div class="container mt-5">
-    <div class="card shadow-sm">
-      <div class="card-header text-center">
-        <h2 class="mb-0">Đơn Hàng Của Tôi</h2>
+    <div class="card shadow border-0">
+      <div class="card-header bg-light text-center py-3">
+        <h2 class="mb-0 fw-bold text-primary">
+          <i class="bi bi-bag-check-fill me-2 text-success"></i>Đơn Hàng Của Tôi
+        </h2>
       </div>
-      <div class="card-body">
+      <div class="card-body p-4">
         <!-- Hiển thị spinner khi đang tải -->
-        <div v-if="isLoading" class="d-flex justify-content-center my-4">
-          <div class="spinner-border text-primary" role="status">
+        <div v-if="isLoading" class="d-flex justify-content-center my-5">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">Đang tải...</span>
           </div>
+          <p class="ms-3 my-auto text-muted">Đang tải danh sách đơn hàng...</p>
         </div>
         
         <!-- Không có đơn hàng -->
-        <div v-else-if="orders.length === 0" class="text-center text-muted">
-          <p>Bạn chưa có đơn hàng nào.</p>
-          <NuxtLink to="/" class="btn btn-outline-primary btn-sm">Tiếp tục mua sắm</NuxtLink>
+        <div v-else-if="orders.length === 0" class="text-center text-muted py-5">
+          <i class="bi bi-emoji-frown fs-1"></i>
+          <p class="fs-5 mt-3">Bạn chưa có đơn hàng nào.</p>
+          <NuxtLink to="/" class="btn btn-outline-primary btn-sm mt-2">
+            <i class="bi bi-shop me-1"></i> Tiếp tục mua sắm
+          </NuxtLink>
         </div>
         
         <!-- Danh sách đơn hàng -->
         <div v-else>
-          <table class="table table-bordered table-hover table-striped align-middle">
-            <thead class="table-dark">
-              <tr>
-                <th style="width: 20%;">Mã Đơn Hàng</th>
-                <th style="width: 20%;">Ngày Tạo</th>
-                <th style="width: 20%;">Tổng Tiền</th>
-                <th style="width: 20%;">Trạng Thái</th>
-                <th style="width: 20%; text-align: center;">Hành Động</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="order in orders" :key="order.id">
-                <td>{{ order.code }}</td>
-                <td>{{ formatDate(order.create_date) }}</td>
-                <td>{{ formatPrice(order.total_price) }}</td>
-                <td>
-                  <span :class="['badge', getStatusClass(order.status)]">{{ order.status }}</span>
-                </td>
-                <td class="text-center">
-                  <NuxtLink :to="`/order/${order.id}`" class="btn btn-primary btn-sm">
-                    Xem Chi Tiết
-                  </NuxtLink>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped align-middle">
+              <thead class="table-dark">
+                <tr class="text-center">
+                  <th>Mã Đơn Hàng</th>
+                  <th>Ngày Tạo</th>
+                  <th>Tổng Tiền</th>
+                  <th>Trạng Thái</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="order in orders" :key="order.id" class="text-center">
+                  <td class="fw-bold text-primary">{{ order.code }}</td>
+                  <td>{{ formatDate(order.create_date) }}</td>
+                  <td class="text-danger fw-semibold">{{ formatPrice(order.total_price) }}</td>
+                  <td>
+                    <span :class="['badge', getStatusClass(order.status)]">{{ order.status }}</span>
+                  </td>
+                  <td>
+                    <NuxtLink :to="`/order/${order.id}`" class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                      <i class="bi bi-eye me-1"></i>Xem Chi Tiết
+                    </NuxtLink>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-      <div class="card-footer text-center">
-        <NuxtLink to="/" class="btn btn-outline-secondary btn-sm">Quay về Trang Chủ</NuxtLink>
+      <div class="card-footer text-center bg-light">
+        <NuxtLink to="/" class="btn btn-outline-secondary btn-sm">
+          <i class="bi bi-arrow-left me-1"></i>Quay về Trang Chủ
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -99,8 +109,6 @@ const formatPrice = (price) => {
 };
 
 const formatDate = (dateStr) => {
-  // Giả sử create_date là chuỗi datetime: "2024-12-10 18:02:15"
-  // Chúng ta có thể parse và định dạng lại:
   const date = new Date(dateStr.replace(' ', 'T'));
   return date.toLocaleString('vi-VN', { 
     year: 'numeric', 
@@ -129,7 +137,21 @@ const getStatusClass = (status) => {
 .container {
   max-width: 900px;
 }
-.card-header {
-  background-color: #f8f9fa;
+
+.card {
+  border-radius: 10px;
+}
+
+.table thead th {
+  font-size: 0.9rem;
+}
+
+.table tbody td {
+  font-size: 0.85rem;
+}
+
+.badge {
+  font-size: 0.8rem;
+  padding: 0.4em 0.6em;
 }
 </style>
