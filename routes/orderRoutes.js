@@ -17,4 +17,7 @@ router.get("/", orderController.getAllOrders);
 // Xóa một đơn hàng theo orderId
 router.delete("/:orderId", orderController.deleteOrder);
 
+router.put('/:orderId/confirm', orderController.confirmOrder);
+router.put('/:orderId/cancel', orderController.cancelOrder);
+
 module.exports = router;

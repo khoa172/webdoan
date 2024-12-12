@@ -184,3 +184,45 @@ exports.deleteOrder = async (req, res) => {
     connection.release();
   }
 };
+
+// API xác nhận đơn hàng
+exports.confirmOrder = async (req, res) => {
+  const { orderId } = req.params;
+
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ message: "Thiếu thông tin orderId hợp lệ" });
+  }
+
+  try {
+    await db.query(
+      `UPDATE db_order SET status = 'Thành công', date_confirm = NOW() WHERE id = ?`,
+      [orderId]
+    );
+
+    res.status(200).json({ message: "Đơn hàng đã được xác nhận thành công" });
+  } catch (error) {
+    console.error("Lỗi khi xác nhận đơn hàng:", error);
+    res.status(500).json({ message: "Lỗi server khi xác nhận đơn hàng", error: error.message });
+  }
+};
+
+// API hủy đơn hàng
+exports.cancelOrder = async (req, res) => {
+  const { orderId } = req.params;
+
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ message: "Thiếu thông tin orderId hợp lệ" });
+  }
+
+  try {
+    await db.query(
+      `UPDATE db_order SET status = 'Hủy' WHERE id = ?`,
+      [orderId]
+    );
+
+    res.status(200).json({ message: "Đơn hàng đã được hủy thành công" });
+  } catch (error) {
+    console.error("Lỗi khi hủy đơn hàng:", error);
+    res.status(500).json({ message: "Lỗi server khi hủy đơn hàng", error: error.message });
+  }
+};
