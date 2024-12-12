@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th12 11, 2024 lúc 10:44 AM
+-- Thời gian đã tạo: Th12 12, 2024 lúc 08:12 AM
 -- Phiên bản máy phục vụ: 8.3.0
 -- Phiên bản PHP: 8.2.18
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `db_brand` (
   `create_date` varchar(255) NOT NULL,
   `user` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_brand`
@@ -72,7 +72,11 @@ CREATE TABLE IF NOT EXISTS `db_brand` (
 
 INSERT INTO `db_brand` (`id`, `name`, `code`, `image`, `description`, `create_date`, `user`) VALUES
 (12, 'iPhone', '1', '1733030168518-pngegg.png', '', '2024-12-01T05:16:08.520Z', 'Admin'),
-(13, 'Samsung', '2', '1733388097414-logosamsung.png', '', '2024-12-05T08:41:37.417Z', 'Admin');
+(13, 'Samsung', '2', '1733388097414-logosamsung.png', '', '2024-12-05T08:41:37.417Z', 'Admin'),
+(14, 'Oppo', '3', '1733979354713-a03c557d7ce8760b42f1fa7d77e79c67.webp', '', '2024-12-12T04:55:54.715Z', 'Admin'),
+(15, 'Xiaomi', '4', '1733979439731-pngegg (1).png', '', '2024-12-12T04:57:19.733Z', 'Admin'),
+(16, 'Vivo', '5', '1733979474591-avfhqtek8.webp', '', '2024-12-12T04:57:54.593Z', 'Admin'),
+(17, 'Realme', '6', '1733979555704-Realme Logo (PNG480p) - Vector69Com.png', '', '2024-12-12T04:59:15.705Z', 'Admin');
 
 -- --------------------------------------------------------
 
@@ -132,7 +136,7 @@ INSERT INTO `db_customer` (`id`, `username`, `password`, `fullname`, `mail`, `ph
 (13, 'votuananh', 'matkhau852', 'Võ Tuấn Anh', 'tuananh@gmail.com', '0967890123', '505 Phạm Văn Đồng, Vũng Tàu', '2024-01-08 17:00:00'),
 (14, 'nguyenthuykieu', 'matkhau963', 'Nguyễn Thúy Kiều', 'thuykieu@gmail.com', '0913456789', '606 Trần Hưng Đạo, Huế', '2024-01-09 18:00:00'),
 (20, 'khoaquoc1', '$2b$10$18FjsUcKYUQ3A8MpUCTf3OfDist2Fcit7ThhYS7YQfvEMVljx1f0K', 'khoanguyen', 'khoaquoc21@gmail.com', '070 671 89', '123', '2024-11-21T03:13:08.984Z'),
-(23, 'khoaquoc', '$2b$10$edkhC6yJ484Cp8HSGwBOwOnjcLoDsFTXVCuzzM7pDgTOvOh9.AEk6', 'khoanguyen', 'khoa12@gmail.com', '070 671 89', '1', '2024-12-01T06:26:31.861Z');
+(23, 'khoaquoc', '$2b$10$i64iCdSfJwVPQD2w.P2WT.eXuZIMUuwLeGvvXof9qBqI1n4/QvB5K', 'khoanguyen2', 'khoa12@gmail.com', '070 671 89', '1', '2024-12-01T06:26:31.861Z');
 
 -- --------------------------------------------------------
 
@@ -150,24 +154,24 @@ CREATE TABLE IF NOT EXISTS `db_detail_order` (
   PRIMARY KEY (`id`),
   KEY `id_product` (`id_product`),
   KEY `id_order` (`id_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_detail_order`
 --
 
 INSERT INTO `db_detail_order` (`id`, `id_order`, `id_product`, `qty`, `sub_total_price`) VALUES
-(2, 2, 8, 1, 16590000),
-(3, 2, 9, 1, 33690000),
-(4, 3, 8, 1, 16590000),
-(5, 3, 9, 1, 33690000),
-(6, 3, 10, 1, 9690000),
-(7, 5, 8, 1, 16590000),
-(8, 5, 11, 1, 24990000),
 (9, 6, 8, 1, 16590000),
 (10, 6, 9, 1, 33690000),
 (11, 7, 9, 1, 33690000),
-(12, 8, 8, 1, 16590000);
+(12, 8, 8, 1, 16590000),
+(21, 11, 8, 1, 16590000),
+(22, 11, 9, 1, 33690000),
+(23, 11, 10, 1, 9690000),
+(24, 11, 11, 1, 24990000),
+(25, 12, 9, 1, 33690000),
+(26, 13, 9, 1, 33690000),
+(27, 14, 8, 5, 82950000);
 
 -- --------------------------------------------------------
 
@@ -194,19 +198,20 @@ CREATE TABLE IF NOT EXISTS `db_order` (
   `date_confirm` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `db_order_ibfk_1` (`custom_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_order`
 --
 
 INSERT INTO `db_order` (`id`, `custom_id`, `customer_name`, `customer_phone`, `customer_email`, `customer_address`, `total_price`, `total_num_product`, `create_date`, `note`, `payment_method`, `status`, `time`, `code`, `date_confirm`) VALUES
-(2, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'dddd', 50280000, 2, '2024-12-10 18:02:15', 'sdasd', 'COD', 'Chờ xác nhận', '2024-12-10 18:02:15', 'ORD-1733828535936', '2024-12-10 18:02:15'),
-(3, 23, 'khoanguyen', '1234567890', 'K@gmail.com', 'ggggg', 59970000, 3, '2024-12-10 18:12:49', '', 'COD', 'Chờ xác nhận', '2024-12-10 18:12:49', 'ORD-1733829169223', '2024-12-10 18:12:49'),
-(5, 23, 'khoanguyen12344545', '3321030123', 'HJ@gmail.com', 'tphcm', 41580000, 2, '2024-12-10 19:15:38', '1245677sdfsfsfsfdsfdsf', 'COD', 'Chờ xác nhận', '2024-12-10 19:15:38', 'ORD-1733832938784', '2024-12-10 19:15:38'),
-(6, 23, 'khoanguyendd', '3321030123', 'HJdd@gmail.com', 'wwwwww, Phường 04, Quận 8, Thành phố Hồ Chí Minh', 50280000, 2, '2024-12-11 16:23:46', '', 'COD', 'Chờ xác nhận', '2024-12-11 16:23:46', 'ORD-1733909026457', '2024-12-11 16:23:46'),
-(7, 23, 'khoanguyen2', '1234567890', 'q@gmail.com', '12d, Xã Bắc Sơn, Huyện Sóc Sơn, Thành phố Hà Nội', 33690000, 1, '2024-12-11 16:37:31', 'hi', 'Direct', 'Chờ xác nhận', '2024-12-11 16:37:31', 'ORD-1733909851555', '2024-12-11 16:37:31'),
-(8, 23, 'khoanguyen88888', '0706718920', 'HJdddddd@gmail.com', 'dddasda343, Xã Mường Chiên, Huyện Quỳnh Nhai, Tỉnh Sơn La', 16590000, 1, '2024-12-11 16:56:50', 'dddadas', 'Direct', 'Chờ xác nhận', '2024-12-11 16:56:50', 'ORD-1733911010618', '2024-12-11 16:56:50');
+(6, 23, 'khoanguyendd', '3321030123', 'HJdd@gmail.com', 'wwwwww, Phường 04, Quận 8, Thành phố Hồ Chí Minh', 50280000, 2, '2024-12-11 16:23:46', '', 'COD', 'Thành công', '2024-12-11 16:23:46', 'ORD-1733909026457', '2024-12-12 10:24:47'),
+(7, 23, 'khoanguyen2', '1234567890', 'q@gmail.com', '12d, Xã Bắc Sơn, Huyện Sóc Sơn, Thành phố Hà Nội', 33690000, 1, '2024-12-11 16:37:31', 'hi', 'Direct', 'Thành công', '2024-12-11 16:37:31', 'ORD-1733909851555', '2024-12-12 10:24:42'),
+(8, 23, 'khoanguyen88888', '0706718920', 'HJdddddd@gmail.com', 'dddasda343, Xã Mường Chiên, Huyện Quỳnh Nhai, Tỉnh Sơn La', 16590000, 1, '2024-12-11 16:56:50', 'dddadas', 'Direct', 'Thành công', '2024-12-11 16:56:50', 'ORD-1733911010618', '2024-12-12 10:23:27'),
+(11, 23, 'khoanguyen12344545', '1234567890', 'HJdd@gmail.com', 'llll', 84960000, 4, '2024-12-12 10:55:04', '11121', 'COD', 'Hủy', '2024-12-12 10:55:04', 'ORD-1733975704532', '2024-12-12 10:55:04'),
+(12, 23, 'khoanguyen12344545', '1234567890', 'K@gmail.com', 'kk', 33690000, 1, '2024-12-12 10:55:43', 'j', 'COD', 'Hủy', '2024-12-12 10:55:43', 'ORD-1733975743437', '2024-12-12 10:55:43'),
+(13, 23, 'nguyen van b', '0386574344', 'Khoanguyen12345@gmail.com', '45/34 Cao Lỗ', 33690000, 1, '2024-12-12 11:10:31', 'gần nail trúc mai', 'COD', 'Chờ xác nhận', '2024-12-12 11:10:31', 'ORD-1733976631258', '2024-12-12 11:10:31'),
+(14, 23, 'nguyen van c', '1234567890', 'Khoanguyen2807@gmail.com', '123 ABC, Phường 13, Quận 10, Thành phố Hồ Chí Minh', 82950000, 1, '2024-12-12 11:17:03', 'ABC', 'COD', 'Chờ xác nhận', '2024-12-12 11:17:03', 'ORD-1733977023703', '2024-12-12 11:17:03');
 
 -- --------------------------------------------------------
 
@@ -238,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `db_product` (
   PRIMARY KEY (`id`),
   KEY `id_brand` (`id_brand`),
   KEY `id_category` (`id_category`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_product`
@@ -248,7 +253,27 @@ INSERT INTO `db_product` (`id`, `id_category`, `id_brand`, `name`, `code`, `pric
 (8, 3, 12, 'iPhone 14', '1', 16590000, 100, 'còn hàng', 'iPhone 14 128GB được xem là mẫu sxmartphone bùng nổ của nhà táo trong năm 2022, ấn tượng với ngoại hình trẻ trung, màn hình chất lượng đi kèm với những cải tiến về hệ điều hành và thuật toán xử lý hình ảnh, giúp máy trở thành cái tên thu hút được đông đảo người dùng quan tâm tại thời điểm ra mắt.', 'OLED', '6 GB', 'Apple A15 Bionic', '128 GB', 'iOS 17', '12 MP', '2 camera 12 MP', 'Admin', '2024-12-01', '[\"1733031102777-iphone-14_1.webp\"]'),
 (9, 3, 12, 'iPhone 16 Pro Max 256GB', '2', 33690000, 1000, 'còn hàng', 'Đặc điểm nổi bật của iPhone 16 Pro Max 256GB\r\nMàn hình Super Retina XDR 6,9 inch lớn hơn có viền mỏng hơn, đem đến cảm giác tuyệt vời khi cầm trên tay.\r\nĐiều khiển Camera - Chỉ cần trượt ngón tay để điều chỉnh camera giúp chụp ảnh hoặc quay video đẹp hoàn hảo và siêu nhanh.\r\niPhone 16 Pro Max có thiết kế titan cấp 5 với lớp hoàn thiện mới, tinh tế được xử lý bề mặt vi điểm.\r\niPhone 16 Pro Max được cài đặt sẵn hệ điều hành iOS 18, cho giao diện trực quan, dễ sử dụng và nhiều tính năng hữu ích.', 'Super Retina XDR OLED', '6 GB', 'CPU 6 lõi mới với 2 lõi hiệu năng và 4 lõi hiệu suất', '256 GB', 'iOS 18', '12MP, ƒ/1.9, Tự động lấy nét theo pha Focus Pixels', 'Camera chính: 48MP, f/1.78, 24mm, 2µm, chống rung quang học dịch chuyển cảm biến thế hệ thứ hai, Focus Pixels 100% Telephoto 2x 12MP: 52 mm, ƒ/1.6 Camera góc siêu rộng: 48MP, 13 mm,ƒ/2.2 và trường ảnh 120°, Hybrid Focus Pixels, ảnh có độ phân giải', 'Admin', '2024-12-03', '[\"1733239940811-iphone-16-pro-max.webp\"]'),
 (10, 3, 12, 'iPhone 11 128GB', '3', 9690000, 1000, 'còn hàng', 'iPhone 11 128GB chính hãng có thiết kế hiện đại, thừa hưởng khá nhiều từ sự các thế hệ trước như Xs hay X. Khung viền nhôm chắc chắn cùng với mặt kính đem lại vẻ sang trọng, đẳng cấp. Các góc cạnh được bo tròn. Mặt kính cường lực không chỉ giúp màn hình “mạnh mẽ” hơn mà còn chống xước, chống bám vân tay tốt hơn so với đời trước.', ' IPS LCD', '4 GB', ' Apple A13 Bionic (7 nm+)', '128 GB', ' iOS 13', ' 12 MP, f/2.2', ' 12 MP + 12 MP,', 'Admin', '2024-12-03', '[\"1733236052282-1683605592281_thumb_iphone_11_didongviet.webp\"]'),
-(11, 3, 13, 'Samsung Galaxy Z Flip6 12GB 256GB', '4', 24990000, 100, 'còn hàng', 'Đặc điểm nổi bật của Samsung Galaxy Z Flip6 12GB 256GB\r\nChip Snapdragon 8 Gen 3 8 nhân mang đến hiệu năng mạnh mẽ, cho phép bạn xử lý các tác vụ hàng ngày một cách mượt mà.\r\nMàn hình gập 6.7 inch Dynamic AMOLED 2X 120Hz mang đến trải nghiệm hình ảnh tuyệt vời, với độ phân giải cao.\r\nCamera sau 50MP + 12MP cho phép bạn chụp ảnh chất lượng cao, với độ chi tiết cao và màu sắc rực rỡ. \r\nPin dung lượng 4000 mAh cho phép bạn sử dụng điện thoại cả ngày dài mà không cần lo lắng về việc hết pin. \r\nSamsung Z Flip 6 là chiếc điện thoại gập vỏ sò chạy chip Snapdragon 8 Gen 3 for Galaxy mạnh mẽ bậc nhất hiện nay. Máy có cụm camera kép độ phân giải 50MP sắc nét. Đi kèm là bộ nhớ RAM 12GB và thời lượng pin được nâng cấp thêm 4 tiếng sử dụng. Màn hình ngoài Z Flip6 tăng kích thước lên 3.4 inch cho khả năng đa nhiệm vượt trội. Sản phẩm chính thức được ra mắt ngày 10/7/2024 tại sự kiện Galaxy Unpacked diễn ra ở thủ đô Paris nước Pháp.', 'Dynamic AMOLED 2X', '12 GB', ' Snapdragon 8 Gen 3 for Galaxy Tăng lên 42% AI', '256 GB', 'Android', '10.0 MP, f/2.2', 'Camera góc chụp rộng: 50.0 MP, f/1.8, thu phóng quang học 2x Góc chụp siêu rộng: 12.0 MP, f/2.2', 'Admin', '2024-12-05', '[\"1733388272527-flip-vang.webp\"]');
+(11, 3, 13, 'Samsung Galaxy Z Flip6 12GB 256GB', '4', 24990000, 100, 'còn hàng', 'Đặc điểm nổi bật của Samsung Galaxy Z Flip6 12GB 256GB\r\nChip Snapdragon 8 Gen 3 8 nhân mang đến hiệu năng mạnh mẽ, cho phép bạn xử lý các tác vụ hàng ngày một cách mượt mà.\r\nMàn hình gập 6.7 inch Dynamic AMOLED 2X 120Hz mang đến trải nghiệm hình ảnh tuyệt vời, với độ phân giải cao.\r\nCamera sau 50MP + 12MP cho phép bạn chụp ảnh chất lượng cao, với độ chi tiết cao và màu sắc rực rỡ. \r\nPin dung lượng 4000 mAh cho phép bạn sử dụng điện thoại cả ngày dài mà không cần lo lắng về việc hết pin. \r\nSamsung Z Flip 6 là chiếc điện thoại gập vỏ sò chạy chip Snapdragon 8 Gen 3 for Galaxy mạnh mẽ bậc nhất hiện nay. Máy có cụm camera kép độ phân giải 50MP sắc nét. Đi kèm là bộ nhớ RAM 12GB và thời lượng pin được nâng cấp thêm 4 tiếng sử dụng. Màn hình ngoài Z Flip6 tăng kích thước lên 3.4 inch cho khả năng đa nhiệm vượt trội. Sản phẩm chính thức được ra mắt ngày 10/7/2024 tại sự kiện Galaxy Unpacked diễn ra ở thủ đô Paris nước Pháp.', 'Dynamic AMOLED 2X', '12 GB', ' Snapdragon 8 Gen 3 for Galaxy Tăng lên 42% AI', '256 GB', 'Android', '10.0 MP, f/2.2', 'Camera góc chụp rộng: 50.0 MP, f/1.8, thu phóng quang học 2x Góc chụp siêu rộng: 12.0 MP, f/2.2', 'Admin', '2024-12-05', '[\"1733388272527-flip-vang.webp\"]'),
+(12, 3, 12, 'iPhone 14 128GB', '1', 16590000, 100, 'còn hàng', 'iPhone 14 128GB với hiệu năng mạnh mẽ, camera cải tiến, pin bền, màn hình OLED đẹp.', 'OLED', '6 GB', 'Apple A15 Bionic', '128 GB', 'iOS 15', '12 MP', '2 camera 12 MP', 'Admin', '2024-12-06', '[\"1733981058312-iPhone 14 128GB.webp\"]'),
+(13, 3, 12, 'iPhone 14 Pro 256GB', '2', 25990000, 200, 'còn hàng', 'iPhone 14 Pro màn hình ProMotion, camera tele, chip A16, thiết kế sang trọng.', 'OLED 120Hz', '6 GB', 'Apple A16 Bionic', '256 GB', 'iOS 16', '12 MP', '3 camera 48 MP', 'Admin', '2024-12-06', '[\"1733981087160-iPhone 14 Pro 256GB.webp\"]'),
+(14, 3, 13, 'Samsung Galaxy S23 128GB', '3', 17990000, 300, 'còn hàng', 'Galaxy S23 hiệu năng cao, màn hình AMOLED 120Hz, camera sắc nét, pin ổn.', 'AMOLED 120Hz', '8 GB', 'Snapdragon 8 Gen 2', '128 GB', 'Android 13', '10 MP', '3 camera 50 MP', 'Admin', '2024-12-07', '[\"1733981154925-Samsung Galaxy S23 128GB.webp\"]'),
+(15, 3, 13, 'Samsung Galaxy S23 Ultra 512GB', '4', 31990000, 150, 'còn hàng', 'S23 Ultra bút S Pen, camera 200MP, màn hình cong, đỉnh cao công nghệ Samsung.', 'Dynamic AMOLED 120Hz', '12 GB', 'Snapdragon 8 Gen 2', '512 GB', 'Android 13', '12 MP', '4 camera 200 MP', 'Admin', '2024-12-07', '[\"1733981182015-Samsung Galaxy S23 Ultra 512GB.webp\"]'),
+(16, 3, 14, 'OPPO Reno8 Pro', '5', 12990000, 500, 'còn hàng', 'Reno8 Pro thiết kế mỏng, camera chụp đêm, sạc nhanh, màn hình AMOLED mượt.', 'AMOLED 90Hz', '8 GB', 'MediaTek Dimensity 1300', '256 GB', 'Android 13', '32 MP', '3 camera 50 MP', 'Admin', '2024-12-08', '[\"1733981243440-OPPO Reno8 Pro.webp\"]'),
+(17, 3, 14, 'OPPO Find X5 Pro', '6', 21990000, 150, 'còn hàng', 'Find X5 Pro camera Hasselblad, màn hình LTPO 120Hz, sạc 80W, hiệu năng mạnh.', 'LTPO AMOLED 120Hz', '12 GB', 'Snapdragon 8 Gen 1', '256 GB', 'Android 13', '32 MP', '3 camera 50 MP Hasselblad', 'Admin', '2024-12-08', '[\"1733981299774-OPPO Find X5 Pro.webp\"]'),
+(18, 3, 15, 'Xiaomi 12 256GB', '7', 13990000, 400, 'còn hàng', 'Xiaomi 12 nhỏ gọn, camera tốt, sạc nhanh 67W, màn hình AMOLED 120Hz.', 'AMOLED 120Hz', '8 GB', 'Snapdragon 8 Gen 1', '256 GB', 'Android 13', '32 MP', '3 camera 50 MP', 'Admin', '2024-12-09', '[\"1733981365867-Xiaomi 12 256GB.webp\"]'),
+(19, 3, 15, 'Xiaomi 12T Pro', '8', 15990000, 300, 'còn hàng', '12T Pro camera 200MP, sạc 120W, hiệu năng cao, màn hình tuyệt đẹp.', 'AMOLED 120Hz', '12 GB', 'Snapdragon 8+ Gen 1', '256 GB', 'Android 13', '20 MP', '3 camera 200 MP', 'Admin', '2024-12-09', '[\"1733981400035-Xiaomi 12T Pro.webp\"]'),
+(20, 3, 16, 'Vivo X90', '9', 12990000, 350, 'còn hàng', 'Vivo X90 camera Zeiss, màn hình AMOLED E5, sạc nhanh 120W.', 'AMOLED E5', '8 GB', 'Dimensity 9000', '128 GB', 'Android 13', '32 MP', '3 camera 50 MP Zeiss', 'Admin', '2024-12-10', '[\"1733981434245-Vivo X90.webp\"]'),
+(21, 3, 16, 'Vivo V27 Pro', '10', 9990000, 500, 'còn hàng', 'V27 Pro thiết kế mỏng, camera selfie tốt, màn hình cong, màu sắc trẻ trung.', 'AMOLED 120Hz', '8 GB', 'Dimensity 8200', '128 GB', 'Android 13', '50 MP', '3 camera 64 MP', 'Admin', '2024-12-10', '[\"1733981466595-Vivo V27 Pro.webp\"]'),
+(22, 3, 17, 'Realme GT2 Pro', '11', 11990000, 250, 'còn hàng', 'GT2 Pro hiệu năng mạnh, màn hình LTPO 120Hz, camera góc siêu rộng 150°.', 'LTPO AMOLED 120Hz', '12 GB', 'Snapdragon 8 Gen 1', '256 GB', 'Android 13', '32 MP', '3 camera 50 MP', 'Admin', '2024-12-11', '[\"1733981497875-Realme GT2 Pro.webp\"]'),
+(23, 3, 17, 'Realme 10 Pro+', '12', 8990000, 600, 'còn hàng', 'Realme 10 Pro+ giá tốt, màn hình cong AMOLED, sạc nhanh 67W, camera ổn.', 'AMOLED 120Hz', '8 GB', 'Dimensity 1080', '128 GB', 'Android 13', '16 MP', '3 camera 108 MP', 'Admin', '2024-12-11', '[\"1733981531845-Realme 10 Pro+.webp\"]'),
+(24, 3, 15, 'Xiaomi Redmi Note 11 Pro', '13', 7490000, 500, 'còn hàng', 'Redmi Note 11 Pro pin 5000mAh, sạc 67W, màn hình AMOLED 120Hz, camera 108MP.', 'AMOLED 120Hz', '6 GB', 'MediaTek G96', '128 GB', 'Android 12', '16 MP', '3 camera 108 MP', 'Admin', '2024-12-12', '[\"1733981577556-Xiaomi Redmi Note 11 Pro.webp\"]'),
+(25, 3, 14, 'OPPO A96', '14', 5490000, 700, 'còn hàng', 'OPPO A96 giá rẻ, pin lớn 5000mAh, sạc 33W, hiệu năng đủ dùng, camera ổn.', 'IPS LCD', '8 GB', 'Snapdragon 680', '128 GB', 'Android 12', '16 MP', '2 camera 50 MP', 'Admin', '2024-12-12', '[\"1733981673896-OPPO A96.png\"]'),
+(26, 3, 12, 'iPhone 15 128GB', '19', 19990000, 300, 'còn hàng', 'iPhone 15 cải tiến camera, chip A16, cổng USB-C, màn hình sáng hơn, pin bền.', 'OLED', '6 GB', 'Apple A16 Bionic', '128 GB', 'iOS 16', '12 MP', '2 camera 48 MP', 'Admin', '2024-12-13', '[\"1733981706549-iPhone 15 128GB.webp\"]'),
+(27, 3, 13, 'Samsung Galaxy A34 5G', '20', 8990000, 500, 'còn hàng', 'A34 5G giá hợp lý, màn hình AMOLED 90Hz, camera tốt, hỗ trợ 5G.', 'AMOLED 90Hz', '6 GB', 'Dimensity 1080', '128 GB', 'Android 13', '13 MP', '3 camera 48 MP', 'Admin', '2024-12-13', '[\"1733981734111-Samsung Galaxy A34 5G.webp\"]'),
+(28, 3, 16, 'Vivo Y78', '21', 5990000, 600, 'còn hàng', 'Vivo Y78 giá rẻ, pin lớn 5000mAh, camera ổn, màn hình IPS đủ dùng.', 'IPS LCD', '4 GB', 'Snapdragon 695', '64 GB', 'Android 13', '8 MP', '2 camera 50 MP', 'Admin', '2024-12-14', '[\"1733981780190-Vivo Y78.webp\"]'),
+(29, 3, 17, 'Realme C55', '22', 3990000, 800, 'còn hàng', 'Realme C55 giá rất rẻ, hiệu năng cơ bản, pin to 5000mAh, camera đủ xài.', 'IPS LCD', '4 GB', 'Helio G88', '64 GB', 'Android 12', '8 MP', '2 camera 50 MP', 'Admin', '2024-12-14', '[\"1733981810160-Realme C55.webp\"]'),
+(30, 3, 13, 'Samsung Galaxy M34', '23', 5990000, 500, 'còn hàng', 'M34 pin 6000mAh, màn hình AMOLED, hiệu năng tầm trung, thích hợp đa số người dùng.', 'AMOLED', '6 GB', 'Exynos 1280', '128 GB', 'Android 13', '13 MP', '3 camera 50 MP', 'Admin', '2024-12-15', '[\"1733981847794-Samsung Galaxy M34.webp\"]'),
+(31, 3, 15, 'Xiaomi Redmi 12C', '24', 2990000, 1000, 'còn hàng', 'Redmi 12C giá siêu rẻ, pin lớn, màn hình to, hiệu năng cơ bản cho nhu cầu nhẹ.', 'IPS LCD', '4 GB', 'Helio G35', '64 GB', 'Android 12', '5 MP', '2 camera 50 MP', 'Admin', '2024-12-15', '[\"1733981879951-Xiaomi Redmi 12C.webp\"]');
 
 -- --------------------------------------------------------
 
@@ -259,10 +284,17 @@ INSERT INTO `db_product` (`id`, `id_category`, `id_brand`, `name`, `code`, `pric
 DROP TABLE IF EXISTS `db_slider`;
 CREATE TABLE IF NOT EXISTS `db_slider` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `image` varchar(255) NOT NULL,
+  `image` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `db_slider`
+--
+
+INSERT INTO `db_slider` (`id`, `image`, `user`) VALUES
+(20, '[\"1733990145512-banner1.webp\",\"1733990145512-banner2.webp\",\"1733990145512-banner3.webp\"]', '1');
 
 --
 -- Các ràng buộc cho các bảng đã đổ
