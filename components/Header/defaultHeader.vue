@@ -47,7 +47,8 @@
           <!-- Phần shopping item -->
           <div class="col-sm-6">
             <NuxtLink to="/cart/cart">
-              <div class="shopping-item fa fa-shopping-cart">
+              <div class="shopping-item shopping-link" >
+                <i class="fa fa-shopping-cart cart-icon"></i> Giỏ hàng
                 <span class="product-count">{{ cart.total_num }}</span>
               </div>
             </NuxtLink>
@@ -99,6 +100,7 @@ const logout = () => {
 
 
 <style scoped>
+
 .header-area {
   background: none repeat scroll 0 0 #f4f4f4;
 }
@@ -161,24 +163,35 @@ const logout = () => {
 .logo h1 a span {
   color: #ee5057;
 }
+
+
+/* ////////////// */
 .shopping-item {
-  border: 1px solid #ddd;
+  border: 2px solid rgba(255, 0, 0, 0); /* Thêm border màu đỏ cho thẻ div */
   float: right;
-  font-size: 30px;
+  font-size: 14px; /* Giảm kích thước chữ "Giỏ hàng" */
   margin-top: 40px;
   padding: 10px;
   position: relative;
-  border: none; /* Xóa border bao quanh */
+  border-radius: 5px; /* Thêm góc bo tròn cho thẻ */
 }
-.shopping-item a {
-  color: #666;
+
+.shopping-link {
+  color: #f00 !important; /* Đổi màu chữ "Giỏ hàng" thành đỏ */
 }
-.cart-amunt {
-  color: #ee5057;
-  font-weight: 700;
+
+.shopping-link:hover {
+  color: #d31818 !important; /* Đổi màu chữ thành trắng khi hover */
 }
+
+.shopping-item i.fa {
+  color: #f00; /* Màu đỏ cho icon giỏ hàng */
+  margin-left: 10px;
+  font-size: 30px; /* Tăng kích thước của icon giỏ hàng */
+}
+
 .product-count {
-  background: none repeat scroll 0 0 #ee5057;
+  background-color: #f00; /* Màu đỏ cho vòng tròn số lượng */
   border-radius: 50%;
   color: #fff;
   display: inline-block;
@@ -191,23 +204,25 @@ const logout = () => {
   top: -10px;
   width: 20px;
 }
-.shopping-item i.fa {
-  margin-left: 15px;
-}
+
 .shopping-item:hover {
-  background: none repeat scroll 0 0 #ee5057;
-  border-color: #ee5057;
+  background-color: #e9b0b0; /* Màu nền khi hover */
 }
+
 .shopping-item:hover a {
-  color: #fff;
+  color: #fff; /* Đổi màu chữ thành trắng khi hover */
   text-decoration: none;
 }
+
 .shopping-item:hover .cart-amunt {
-  color: #fff;
+  color: #fff; /* Màu chữ trong phần cart-amunt khi hover */
 }
+
 .shopping-item:hover .product-count {
-  background: none repeat scroll 0 0 #000;
+  background-color: #000; /* Màu nền của số lượng giỏ hàng khi hover */
 }
+
+/* ////////// */
 .responsive-img {
   width: 100px; 
   height: auto;

@@ -14,7 +14,7 @@
                 :src="`http://localhost:3001/uploads/${slider.image[currentImageIndexes[index]]}`" 
                 class="d-block w-100 rounded" 
                 alt="Banner Image"
-                style="object-fit:cover; height:200px;"
+                style="object-fit:cover; height:350px;"
               >
             </div>
           </div>
@@ -157,7 +157,7 @@
                       {{ formatPrice(product.price) }}
                     </p>
                     <button
-                      class="btn btn-primary btn-sm mt-auto"
+                      class="btn btn-primary btn-sm mt-auto product-card-button"
                       @click="goToDetail(product.id)"
                     >
                       Xem Chi Tiết
@@ -321,7 +321,7 @@ onMounted(async () => {
 
 .card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(4, 80, 151, 0.911);
 }
 
 .card img {
@@ -347,5 +347,14 @@ onMounted(async () => {
 
 .bi {
   vertical-align: -0.125em; 
+}
+/* Thêm hover hiệu ứng cho nút "Xem Chi Tiết" */
+.product-card-button {
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.product-card-button:hover {
+  background-color: #3fe529; /* Màu khi hover */
+  border-color: #082f8b;
 }
 </style>
