@@ -49,7 +49,6 @@ const createProduct = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
-// Cập nhật sản phẩm
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
