@@ -101,11 +101,18 @@ const logout = () => {
 
 <style scoped>
 
-.header-area {
-  background: none repeat scroll 0 0 #f4f4f4;
+ul li a, ul li i {
+  text-decoration: none; /* Loại bỏ gạch chân */
+  color: white; /* Đảm bảo các icon và liên kết cũng có màu trắng */
+  font-weight: bold;
+}
+
+ul li a:hover, ul li i:hover {
+  color: #23d25d; /* Màu khi hover để dễ nhận diện */
+  text-decoration: none; /* Loại bỏ gạch chân */
 }
 .header-area a {
-  color: #888;
+  color: #f5f2f2;
 }
 .user-menu ul {
   list-style: outside none none;
@@ -154,7 +161,7 @@ const logout = () => {
   font-weight: 400;
 }
 .logo h1 a {
-  color: #999;
+  color: #f4f1f1;
 }
 .logo h1 a:hover {
   text-decoration: none;
@@ -169,11 +176,12 @@ const logout = () => {
 .shopping-item {
   border: 2px solid rgba(255, 0, 0, 0); /* Thêm border màu đỏ cho thẻ div */
   float: right;
-  font-size: 14px; /* Giảm kích thước chữ "Giỏ hàng" */
+  font-size: 17px; /* Giảm kích thước chữ "Giỏ hàng" */
+  font-weight: bold;
   margin-top: 40px;
   padding: 10px;
   position: relative;
-  border-radius: 5px; /* Thêm góc bo tròn cho thẻ */
+  border-radius: 25px; /* Thêm góc bo tròn cho thẻ */
 }
 
 .shopping-link {
@@ -231,5 +239,31 @@ const logout = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+
+.header-area {
+  position: relative;
+  background-image: url('/images/header.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px 0;
+}
+
+.header-area::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(197, 194, 194, 0); /* Màu phủ (đen, trong suốt) */
+  z-index: 1;
+}
+
+.header-area .container {
+  position: relative;
+  z-index: 2; /* Đảm bảo nội dung hiển thị phía trên lớp phủ */
 }
 </style>
