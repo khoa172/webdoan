@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1:3306
--- Thời gian đã tạo: Th12 12, 2024 lúc 08:12 AM
+-- Thời gian đã tạo: Th12 18, 2024 lúc 09:43 AM
 -- Phiên bản máy phục vụ: 8.3.0
 -- Phiên bản PHP: 8.2.18
 
@@ -154,24 +154,18 @@ CREATE TABLE IF NOT EXISTS `db_detail_order` (
   PRIMARY KEY (`id`),
   KEY `id_product` (`id_product`),
   KEY `id_order` (`id_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_detail_order`
 --
 
 INSERT INTO `db_detail_order` (`id`, `id_order`, `id_product`, `qty`, `sub_total_price`) VALUES
-(9, 6, 8, 1, 16590000),
-(10, 6, 9, 1, 33690000),
-(11, 7, 9, 1, 33690000),
-(12, 8, 8, 1, 16590000),
-(21, 11, 8, 1, 16590000),
-(22, 11, 9, 1, 33690000),
-(23, 11, 10, 1, 9690000),
-(24, 11, 11, 1, 24990000),
-(25, 12, 9, 1, 33690000),
-(26, 13, 9, 1, 33690000),
-(27, 14, 8, 5, 82950000);
+(32, 17, 10, 1, 9690000),
+(33, 18, 11, 1, 24990000),
+(34, 19, 11, 1, 24990000),
+(41, 26, 10, 1, 9690000),
+(42, 27, 12, 1, 16590000);
 
 -- --------------------------------------------------------
 
@@ -192,26 +186,24 @@ CREATE TABLE IF NOT EXISTS `db_order` (
   `create_date` varchar(255) NOT NULL,
   `note` text NOT NULL,
   `payment_method` varchar(255) NOT NULL,
-  `status` enum('Thành công','Chờ xác nhận','Hủy','') NOT NULL,
+  `status` enum('Thành công','Chờ xác nhận','Hủy','Đang giao hàng','Hoàn tất') NOT NULL,
   `time` varchar(255) NOT NULL,
   `code` varchar(255) NOT NULL,
   `date_confirm` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `db_order_ibfk_1` (`custom_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_order`
 --
 
 INSERT INTO `db_order` (`id`, `custom_id`, `customer_name`, `customer_phone`, `customer_email`, `customer_address`, `total_price`, `total_num_product`, `create_date`, `note`, `payment_method`, `status`, `time`, `code`, `date_confirm`) VALUES
-(6, 23, 'khoanguyendd', '3321030123', 'HJdd@gmail.com', 'wwwwww, Phường 04, Quận 8, Thành phố Hồ Chí Minh', 50280000, 2, '2024-12-11 16:23:46', '', 'COD', 'Thành công', '2024-12-11 16:23:46', 'ORD-1733909026457', '2024-12-12 10:24:47'),
-(7, 23, 'khoanguyen2', '1234567890', 'q@gmail.com', '12d, Xã Bắc Sơn, Huyện Sóc Sơn, Thành phố Hà Nội', 33690000, 1, '2024-12-11 16:37:31', 'hi', 'Direct', 'Thành công', '2024-12-11 16:37:31', 'ORD-1733909851555', '2024-12-12 10:24:42'),
-(8, 23, 'khoanguyen88888', '0706718920', 'HJdddddd@gmail.com', 'dddasda343, Xã Mường Chiên, Huyện Quỳnh Nhai, Tỉnh Sơn La', 16590000, 1, '2024-12-11 16:56:50', 'dddadas', 'Direct', 'Thành công', '2024-12-11 16:56:50', 'ORD-1733911010618', '2024-12-12 10:23:27'),
-(11, 23, 'khoanguyen12344545', '1234567890', 'HJdd@gmail.com', 'llll', 84960000, 4, '2024-12-12 10:55:04', '11121', 'COD', 'Hủy', '2024-12-12 10:55:04', 'ORD-1733975704532', '2024-12-12 10:55:04'),
-(12, 23, 'khoanguyen12344545', '1234567890', 'K@gmail.com', 'kk', 33690000, 1, '2024-12-12 10:55:43', 'j', 'COD', 'Hủy', '2024-12-12 10:55:43', 'ORD-1733975743437', '2024-12-12 10:55:43'),
-(13, 23, 'nguyen van b', '0386574344', 'Khoanguyen12345@gmail.com', '45/34 Cao Lỗ', 33690000, 1, '2024-12-12 11:10:31', 'gần nail trúc mai', 'COD', 'Chờ xác nhận', '2024-12-12 11:10:31', 'ORD-1733976631258', '2024-12-12 11:10:31'),
-(14, 23, 'nguyen van c', '1234567890', 'Khoanguyen2807@gmail.com', '123 ABC, Phường 13, Quận 10, Thành phố Hồ Chí Minh', 82950000, 1, '2024-12-12 11:17:03', 'ABC', 'COD', 'Chờ xác nhận', '2024-12-12 11:17:03', 'ORD-1733977023703', '2024-12-12 11:17:03');
+(17, 23, 'khoanguyen12344545', '1234567890', 'HJdd@gmail.com', '123, Xã Hoàng Việt, Huyện Văn Lãng, Tỉnh Lạng Sơn', 9690000, 1, '2024-12-18 15:30:07', '', 'COD', 'Hoàn tất', '2024-12-18 15:30:07', 'ORD-1734510607788', '2024-12-18 15:30:24'),
+(18, 23, 'nguyen van c', '3321030123', 'K@gmail.com', '123, Xã Hạ Long, Huyện Vân Đồn, Tỉnh Quảng Ninh', 24990000, 1, '2024-12-18 15:35:25', '', 'COD', 'Hoàn tất', '2024-12-18 15:35:25', 'ORD-1734510925771', '2024-12-18 15:35:53'),
+(19, 23, 'khoanguyen12344545', '1234567890', 'K@gmail.com', '123, Xã Thọ Văn, Huyện Tam Nông, Tỉnh Phú Thọ', 24990000, 1, '2024-12-18 15:53:43', '', 'COD', 'Hủy', '2024-12-18 15:53:43', 'ORD-1734512023427', '2024-12-18 15:53:43'),
+(26, 23, 'khoanguyen12344545', '3321030123', 'HJdd@gmail.com', '123, Xã Quan Lạn, Huyện Vân Đồn, Tỉnh Quảng Ninh', 9690000, 1, '2024-12-18 16:25:16', '', 'COD', 'Chờ xác nhận', '2024-12-18 16:25:16', 'ORD-1734513916921', '2024-12-18 16:25:16'),
+(27, 23, 'khoanguyen', '1234567890', 'HJdd@gmail.com', '123, Xã Tư Mại, Huyện Yên Dũng, Tỉnh Bắc Giang', 16590000, 1, '2024-12-18 16:41:49', '', 'Direct', 'Chờ xác nhận', '2024-12-18 16:41:49', 'ORD-1734514909304', '2024-12-18 16:41:49');
 
 -- --------------------------------------------------------
 
@@ -287,14 +279,14 @@ CREATE TABLE IF NOT EXISTS `db_slider` (
   `image` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `db_slider`
 --
 
 INSERT INTO `db_slider` (`id`, `image`, `user`) VALUES
-(20, '[\"1733990145512-banner1.webp\",\"1733990145512-banner2.webp\",\"1733990145512-banner3.webp\"]', '1');
+(21, '[\"1734507286103-banner1.webp\",\"1734507286104-banner2.webp\",\"1734507286104-banner3.webp\"]', '1');
 
 --
 -- Các ràng buộc cho các bảng đã đổ
