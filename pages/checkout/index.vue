@@ -191,6 +191,7 @@
                   />
                   <label for="cod" class="form-check-label fw-semibold">Thanh toán khi nhận hàng (COD)</label>
                 </div>
+               
                 <div class="form-check">
                   <input
                     type="radio"
@@ -200,8 +201,11 @@
                     class="form-check-input"
                     required
                   />
-                  <label for="direct" class="form-check-label fw-semibold">Thanh toán trực tiếp</label>
+                  
+                  <label for="direct" class="form-check-label fw-semibold">Thanh toán online</label>
+                 
                 </div>
+
               </div>
 
               <div class="mb-3">
@@ -309,12 +313,58 @@ const fetchWards = async () => {
     console.error("Lỗi khi lấy danh sách phường/xã:", error);
   }
 };
+const initiateMomoPayment = async () => {
+  const orderId = `ORDER-${Date.now()}`; // Tạo mã đơn hàng duy nhất
+  const orderInfo = "Thanh toán đơn hàng qua MoMo";
+  const amount = totalPrice.value;
+
+  if (!amount || amount <= 0) {
+    Swal.fire("Lỗi", "Số tiền thanh toán không hợp lệ.", "error");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3001/api/momo/momo-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId, orderInfo, amount }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Chi tiết lỗi:", errorData);
+      throw new Error(errorData.message || "Không thể khởi tạo thanh toán MoMo");
+    }
+
+    const result = await response.json();
+
+    // Chuyển hướng đến liên kết thanh toán MoMo
+    if (result.payUrl) {
+      window.location.href = result.payUrl;
+    } else {
+      Swal.fire("Lỗi", "Không nhận được liên kết thanh toán từ MoMo.", "error");
+    }
+  } catch (error) {
+    console.error("Lỗi thanh toán MoMo:", error);
+    Swal.fire("Lỗi", error.message || "Không thể khởi tạo thanh toán qua MoMo.", "error");
+  }
+};
+
 
 const submitOrder = async () => {
   if (!paymentMethod.value) {
     Swal.fire("Lỗi", "Vui lòng chọn phương thức thanh toán.", "error");
     return;
   }
+
+  if (paymentMethod.value === "Direct") {
+    // Xử lý thanh toán qua MoMo
+    await initiateMomoPayment();
+  } else {
+    // Xử lý COD hoặc các phương thức khác
+    Swal.fire("Thành công", "Đơn hàng của bạn đã được xác nhận (COD).", "success");
+  }
+
 
   const selectedProvinceName = provinces.value.find((p) => p.code === selectedProvince.value)?.name || "";
   const selectedDistrictName = districts.value.find((d) => d.code === selectedDistrict.value)?.name || "";
@@ -367,6 +417,8 @@ const submitOrder = async () => {
     Swal.fire("Lỗi", "Đã xảy ra lỗi khi tạo đơn hàng.", "error");
   }
 };
+
+
 
 onMounted(async () => {
   const userId = localStorage.getItem("userId");

@@ -121,14 +121,18 @@ const formatDate = (dateStr) => {
 
 const getStatusClass = (status) => {
   switch (status) {
-    case 'Thành công':
-      return 'bg-success';
-    case 'Chờ xác nhận':
-      return 'bg-warning text-dark';
-    case 'Hủy':
-      return 'bg-danger';
+    case "Thành công":
+      return "bg-success text-light";
+    case "Chờ xác nhận":
+      return "bg-warning text-dark";
+    case "Hủy":
+      return "bg-danger text-light";
+    case "Đang giao hàng":
+      return "bg-info text-dark";
+    case "Hoàn tất":
+      return "bg-primary text-light";
     default:
-      return 'bg-secondary';
+      return "bg-secondary text-light";
   }
 };
 </script>

@@ -14,7 +14,7 @@
                 :src="`http://localhost:3001/uploads/${slider.image[currentImageIndexes[index]]}`" 
                 class="d-block w-100 rounded" 
                 alt="Banner Image"
-                style="object-fit:cover; height:350px;"
+                style="object-fit:cover; height:200px;"
               >
             </div>
           </div>
@@ -25,7 +25,7 @@
 
     <!-- Thanh và nút lọc -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="fw-bold text-dark mb-0">Danh Sách Sản Phẩm</h4>
+     
       <button class="btn btn-outline-primary btn-sm" @click="toggleFilters">
         <i class="bi bi-funnel-fill me-1"></i>Lọc sản phẩm
       </button>
@@ -128,7 +128,7 @@
       <div :class="showFilters ? 'col-md-9' : 'col-12'">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-light d-flex align-items-center justify-content-between">
-            <h5 class="mb-0 fw-bold text-secondary">
+            <h5 class="mb-0 fw-bold text-secondary" v-if="searchQuery || selectedBrand || selectedCategory || selectedRam || sortBy">
               <i class="bi bi-grid-3x3-gap-fill me-1"></i>Kết quả: {{ filteredProducts.length }} sản phẩm
             </h5>
             <!-- Gợi ý thêm phân trang hoặc sắp xếp nâng cao tại đây -->
@@ -157,7 +157,7 @@
                       {{ formatPrice(product.price) }}
                     </p>
                     <button
-                      class="btn btn-primary btn-sm mt-auto product-card-button"
+                      class="btn btn-primary btn-sm mt-auto product-card-button " 
                       @click="goToDetail(product.id)"
                     >
                       Xem Chi Tiết
@@ -348,13 +348,29 @@ onMounted(async () => {
 .bi {
   vertical-align: -0.125em; 
 }
-/* Thêm hover hiệu ứng cho nút "Xem Chi Tiết" */
+
 .product-card-button {
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .product-card-button:hover {
-  background-color: #3fe529; /* Màu khi hover */
+  background-color: #3fe529; 
   border-color: #082f8b;
 }
+
+.product-card-button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: inherit;
+  display: block; 
+  text-align: center;
+}
+
+@media (max-width: 576px) {
+  .product-card-button {
+    font-size: 0.85rem; 
+    padding: 0.4rem 0.6rem; 
+  }
+}
+
 </style>
