@@ -18,6 +18,8 @@ router.get("/", orderController.getAllOrders);
 router.delete("/:orderId", orderController.deleteOrder);
 
 router.put('/:orderId/confirm', orderController.confirmOrder);
+router.put('/:orderId/shipping', orderController.markAsShipping);
+router.put('/:orderId/delivered', orderController.markAsDelivered);
 router.put('/:orderId/cancel', orderController.cancelOrder);
 
 module.exports = router;

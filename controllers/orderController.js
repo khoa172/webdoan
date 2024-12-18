@@ -226,3 +226,43 @@ exports.cancelOrder = async (req, res) => {
     res.status(500).json({ message: "Lỗi server khi hủy đơn hàng", error: error.message });
   }
 };
+// API Đánh dấu đơn hàng là "Đang giao hàng"
+exports.markAsShipping = async (req, res) => {
+  const { orderId } = req.params;
+
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ message: "Thiếu thông tin orderId hợp lệ" });
+  }
+
+  try {
+    await db.query(
+      `UPDATE db_order SET status = 'Đang giao hàng' WHERE id = ?`,
+      [orderId]
+    );
+
+    res.status(200).json({ message: "Đơn hàng đã được đánh dấu là Đang giao hàng" });
+  } catch (error) {
+    console.error("Lỗi khi đánh dấu đơn hàng là Đang giao hàng:", error);
+    res.status(500).json({ message: "Lỗi server khi cập nhật trạng thái đơn hàng", error: error.message });
+  }
+};
+// API Đánh dấu đơn hàng là "Hoàn tất giao hàng"
+exports.markAsDelivered = async (req, res) => {
+  const { orderId } = req.params;
+
+  if (!orderId || isNaN(orderId)) {
+    return res.status(400).json({ message: "Thiếu thông tin orderId hợp lệ" });
+  }
+
+  try {
+    await db.query(
+      `UPDATE db_order SET status = 'Hoàn tất' WHERE id = ?`,
+      [orderId]
+    );
+
+    res.status(200).json({ message: "Đơn hàng đã được đánh dấu là Hoàn tất" });
+  } catch (error) {
+    console.error("Lỗi khi đánh dấu đơn hàng là Hoàn tất:", error);
+    res.status(500).json({ message: "Lỗi server khi cập nhật trạng thái đơn hàng", error: error.message });
+  }
+};
