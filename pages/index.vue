@@ -14,7 +14,7 @@
                 :src="`http://localhost:3001/uploads/${slider.image[currentImageIndexes[index]]}`" 
                 class="d-block w-100 rounded" 
                 alt="Banner Image"
-                style="object-fit:cover; height:200px;"
+                style="object-fit:cover; height:350px;"
               >
             </div>
           </div>

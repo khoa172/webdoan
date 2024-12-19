@@ -30,7 +30,7 @@
           </p>
           <h2 class="section-title mt-4">Tầm Nhìn</h2>
           <p>
-            Trở thành công ty hàng đầu trong lĩnh vực công nghệ, được công nhận không chỉ bởi sự sáng tạo mà còn bởi giá trị mà chúng tôi mang lại cho cộng đồng.
+            Team luôn cập nhật các công nghệ mới trong lĩnh vực công nghệ, được công nhận không chỉ bởi sự sáng tạo mà còn bởi giá trị mà chúng tôi mang lại cho cộng đồng.
           </p>
         </v-col>
       </v-row>

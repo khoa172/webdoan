@@ -15,7 +15,7 @@ export default defineNuxtPlugin(() => {
       .snowflake {
         position: absolute;
         top: -10px; /* Bắt đầu từ trên cùng */
-        color: white; /* Màu trắng như tuyết */
+        color: rgba(248, 248, 248, 0.43); /* Màu trắng rất nhạt (30% opacity) */
         font-size: 8px; /* Kích thước mặc định */
         opacity: 0.8; /* Hơi trong suốt */
         animation: fall linear infinite, sway 3s ease-in-out infinite; /* Rơi và lắc nhẹ */
